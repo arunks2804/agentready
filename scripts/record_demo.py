@@ -307,11 +307,11 @@ def run(args) -> Path | None:
             pass
         d.slide('<div class="kicker">Before we start</div><h2>What is real and what is not</h2>'
                 '<ul><li>The three services are <b>fictional</b>, and two are deliberately flawed</li>'
-                '<li>Tasks are run by a <b>scripted test, not an AI</b>. The test results are real</li>'
+                '<li>Tasks are run by a <b>script, not an AI</b>. It stops if something is missing, or runs the real tests</li>'
                 '<li>The fixes are <b>simulated team changes</b>, and agent logs marked Simulated are examples</li></ul>'
                 '<div class="note">No real AI assistant has been tested yet. This demo shows how the method works, not how much real assistants improve.</div>')
-        with Scene(d, "First, a clear disclosure. These three services are fictional, and two are deliberately flawed. Tasks are run by a scripted test, "
-                      "not an AI, though the test results are real. So this shows how the method works, not how much real assistants improve.", pad=0.5):
+        with Scene(d, "First, a clear disclosure. These three services are fictional, and two are deliberately flawed. Tasks are run by a script, "
+                      "not an AI. It stops if something is missing, otherwise it runs the real tests. So this shows how the method works, not how much real assistants improve.", pad=0.5):
             pass
         d.slide(None)
 
@@ -384,9 +384,13 @@ def run(args) -> Path | None:
                    "The score rose while the task stayed blocked"):
             d.zoom(".chart", 1.3)
 
-        # ================================================================== 5. leadership view
-        d.chapter(5, "The leadership view", "Solve a problem once, across teams")
-        with Scene(d, "Service owners see their own work. Platform leaders see the patterns, so a problem shared by many teams can be solved once.",
+        # ================================================================== 5. a view for each team
+        d.chapter(5, "A view for each team", "Owners, managers and the platform team")
+        with Scene(d, "Service owners and their engineering managers see one queue of work, grouped by team and ordered by severity.",
+                   "Remediation: one queue per owning team"):
+            d.go("#/remediation", "Remediation")
+            d.zoom(page.locator("section.card").first.locator(".finding").first, 1.25)
+        with Scene(d, "The platform team that runs the assistants sees the patterns, so a problem shared by many teams can be solved once.",
                    "Recurring blockers across all services"):
             d.go("#/platform", "Platform insights")
             d.zoom(page.locator("section.card").first, 1.05)
@@ -406,8 +410,8 @@ def run(args) -> Path | None:
                    "notifications-service: blocked at the first step"):
             d.go("#/service/notifications-service", "notifications-service")
             d.zoom(".steps", 1.3)
-        with Scene(d, "Registering the service gets the task further, and exposes the next blocker: no description of how the service's interface works.",
-                   "Fix one lets the task reach the next blocker"):
+        with Scene(d, "Registering the service gets the task further, and exposes the next gap: no description of how the service's interface works. The script stops here by rule, before any test runs.",
+                   "Fix one reaches the next gap. This is a rule-based stop, not a test failure"):
             d.unzoom(fast=True)
             page.locator('[data-fix="1-catalog-entry"]').scroll_into_view_if_needed()
             d.fix_and_reassess("1-catalog-entry")
@@ -427,6 +431,25 @@ def run(args) -> Path | None:
         with Scene(d, f"The task completes at a score of just {low}, while billing was blocked at {second}. In these samples, the score told us very little about whether the work would get done.",
                    f"Completed at {low}. Billing was blocked at {second}"):
             d.zoom(page.locator(".card", has_text="Latest task").first, 1.05)
+        # ================================================================== 7. scripts and AI
+        d.chapter(7, "Scripts first, AI where it counts", "Keeping cost down without losing the proof")
+        with Scene(d, "Here is something important about cost.", pad=0.1):
+            d.go("#/automation", "Scripts first")
+        counts = page.locator("#counts .tile-num")
+        assessments, task_runs, ai_calls = [counts.nth(i).inner_text().strip() for i in range(3)]
+        expect(ai_calls == "0", "this prototype makes no AI calls")
+        with Scene(d, f"Everything you have just seen was done by scripts: {words(assessments)} assessments and {words(task_runs)} task runs, with no AI model calls at all.",
+                   f"{assessments} assessments · {task_runs} task runs · {ai_calls} AI model calls"):
+            d.zoom("#counts", 1.25)
+        with Scene(d, "Scripts handle the facts. Does a file exist? Do the tests pass? Did the fix hold? They are fast, repeatable and cheap, so they can run on every change.",
+                   "Scripts handle the facts, on every change"):
+            d.zoom("#script-jobs", 1.2)
+        with Scene(d, "AI agents are for what a script cannot do: attempting a real task with no known answer, explaining a new failure, or judging whether documentation is truly useful. These roles are planned, and not built yet.",
+                   "AI agents handle judgement. These roles are planned, not built"):
+            d.zoom("#ai-jobs", 1.2)
+        with Scene(d, "That is how cost comes down. Scripts screen everything, and the more expensive agent runs go to a small sample of tasks. The saving is not measured yet, because no real agent has been run.",
+                   "Scripts on every change · AI on a sample · saving not yet measured"):
+            d.zoom("#cost-note", 1.25)
         d.unzoom()
         d.chip(None)
         d.caption(None)

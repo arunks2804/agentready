@@ -103,7 +103,8 @@ def _reconcile(conn, service, results, run):
             step = next((s for s in run["steps"] if s["status"] == "blocked"), None)
             if step:
                 evidence.insert(0, {
-                    "kind": "run", "provenance": "measured", "ref": step["name"], "line": None,
+                    "kind": "run", "provenance": "measured" if step.get("output") else "rule",
+                    "ref": step["name"], "line": None,
                     "detail": step["detail"], "output": step.get("output"),
                 })
         row = conn.execute(
@@ -379,6 +380,7 @@ def overview():
         scores = [service_summary(conn, s) for s in services]
         findings = _rows(conn, "SELECT * FROM findings")
         all_runs = _rows(conn, "SELECT * FROM task_runs")
+        assessments = conn.execute("SELECT COUNT(*) FROM assessments").fetchone()[0]
         traces = list_traces(conn=conn)
 
     labels = dict(DIMENSIONS)
@@ -418,5 +420,6 @@ def overview():
         },
         "repeat_failures": {"baseline": len(blocked_first), "latest": len(blocked_last)},
         "recurring": recurring,
+        "automation": {"assessments": assessments, "task_runs": len(all_runs)},
         "services": scores,
     }

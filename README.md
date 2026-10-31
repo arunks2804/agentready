@@ -8,7 +8,7 @@ supporting signal, and a higher score alone proves nothing.
 
 [![AgentReady demo — click to play](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated product demo (under 5 min, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). It is written for a non-technical audience. Plain-English slides explain the problem and what is simulated, then each step is shown live in the app. Every number spoken is read from the page while it records. The British voiceover is AI-generated (Piper, run locally).
+**▶ [Watch the narrated product demo (6 min, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). It is written for a non-technical audience. Plain-English slides explain the problem and what is simulated, then each step is shown live in the app. Every number spoken is read from the page while it records. The British voiceover is AI-generated (Piper, run locally).
 
 📄 **Start here: [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md)** covers the problem, the users, the product, the decisions and the scope. Evidence from a full run is in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
 
@@ -36,7 +36,7 @@ Open http://127.0.0.1:8010. Tests: `python3 -m pytest`.
 | Part | Status |
 |---|---|
 | Readiness checks on sample and registered repos | Real: reads files on disk |
-| Probe task outcomes on sample repos | Real: runs each repo's documented test command in a clean copy |
+| Probe task outcomes on sample repos | Mixed: billing-service's blocks are real test failures; notifications-service's three blocks are rule-based stops before any test runs |
 | The probe's code change | Scripted: applies a known correct change, so it tests the repo and not an LLM |
 | Team fixes in the demo | Simulated: stands in for a commit; the reassessment after it is real |
 | Failed agent traces | Simulated fixtures, labelled in the UI and excluded from task completion |
@@ -45,6 +45,12 @@ Open http://127.0.0.1:8010. Tests: `python3 -m pytest`.
 
 No real LLM agent has been run, so nothing here shows that an LLM's completion
 rate improves. That is the next thing to test.
+
+## Scripts first, AI where it is needed
+
+Scripts handle facts: file checks, builds and tests, reruns, known failure signatures, routing and metrics. An AI agent is needed where judgement is required or where agent behaviour is the thing being measured: attempting real tasks, explaining new failures, judging whether documentation is usable, and drafting fixes for review.
+
+That split keeps cost down, because agents run on a sample while scripts screen every change. The saving is not measured yet. This prototype implements the script side only. See [the brief](PRODUCT_BRIEF.md#scripts-first-ai-where-it-is-needed) for the full split.
 
 ## Reproduce the results and the demo
 

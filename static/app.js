@@ -19,9 +19,26 @@ async function api(path, options = {}) {
   return body;
 }
 
-const provenance = (kind) => kind === "simulated"
-  ? `<span class="chip simulated" title="Fixture data. Not a real agent run.">Simulated</span>`
-  : `<span class="chip" title="Observed by AgentReady on this run.">Measured</span>`;
+const provenance = (kind) => {
+  if (kind === "simulated") return `<span class="chip simulated" title="Fixture data. Not a real agent run.">Simulated</span>`;
+  if (kind === "rule") return `<span class="chip" title="The script found something missing and stopped before running any test.">Rule-based stop</span>`;
+  return `<span class="chip" title="Observed by AgentReady on this run.">Measured</span>`;
+};
+
+const SCRIPT_JOBS = [
+  ["Check that files, API contracts, CI and owners exist", "These are facts"],
+  ["Build the service and run its tests", "Pass or fail needs no judgement"],
+  ["Rerun checks after a fix", "Must be repeatable and cheap"],
+  ["Match known failure patterns", "A rule can cite the exact step"],
+  ["Route findings and calculate metrics", "Plain workflow"],
+];
+const AI_JOBS = [
+  ["Attempt a real task with no known answer", "Only an agent can show what stops an agent"],
+  ["Explain new failures that match no known pattern", "Needs reading and judgement"],
+  ["Judge whether documentation is usable", "A file can exist and still be useless"],
+  ["Decide whether a ticket gives enough context", "Needs interpretation"],
+  ["Draft a fix for the owner to review", "Saves effort, and a person stays accountable"],
+];
 
 function outcome(run) {
   if (!run) return `<span class="status"><i class="dot none"></i>Not measured</span>`;
@@ -47,7 +64,7 @@ async function renderOverview() {
   const { baseline, latest } = o.completion;
   view.innerHTML = `
     <div class="page-head"><div><h1>Can agents finish work on these services?</h1>
-      <p class="sub">Task outcomes come from a scripted probe that really runs each sample repository's tests.</p></div></div>
+      <p class="sub">Task outcomes come from a scripted probe, which stops at a missing prerequisite or runs the sample repository's tests.</p></div></div>
     <section class="grid hero">
       <div class="card">
         <div class="muted">Task completion rate ${provenance("measured")}</div>
@@ -172,7 +189,9 @@ async function renderService(id) {
     ${scoreRoseButBlocked ? `<div class="callout" role="status"><strong>The score rose ${s.score - previous.score} points, but the task is still blocked.</strong> This change has not helped an agent finish the work yet.</div>` : ""}
     <section class="grid two">
       <div class="card"><h2>Latest task ${run ? provenance("measured") : ""}</h2>
-        ${run ? `<p class="muted">${esc(run.task_id)}: ${esc(run.title)}</p><p>${outcome(run)} <span class="muted">${(run.duration_ms / 1000).toFixed(2)}s</span></p>
+        ${run ? `<p class="muted">${esc(run.task_id)}: ${esc(run.title)}</p><p>${outcome(run)} <span class="chip">Run by script</span>
+          ${run.status === "blocked" ? `<span class="chip" id="stop-kind">${run.steps.at(-1).output ? "Test failure" : "Rule-based stop"}</span>` : ""}
+          <span class="muted">${(run.duration_ms / 1000).toFixed(2)}s</span></p>
         <ol class="steps">${run.steps.map((step) => `<li class="${step.status}"><span class="mark">${step.status === "passed" ? "✓" : "✕"}</span>
           <div><strong>${esc(step.name)}</strong><div class="muted">${esc(step.detail)}</div>
           ${step.status === "blocked" && step.output ? `<pre>${esc(errorLine(step.output))}</pre>
@@ -238,7 +257,7 @@ async function renderPlatform() {
   const o = await api("/overview");
   const top = [...o.recurring].sort((a, b) => b.measured_blocks_latest - a.measured_blocks_latest || b.open_findings - a.open_findings);
   view.innerHTML = `<div class="page-head"><div><h1>Platform insights</h1>
-      <p class="sub">Aggregate view for platform product and engineering leads. Use it to find blockers worth solving once, across teams.</p></div></div>
+      <p class="sub">Aggregate view for the AI coding-agent platform team. Use it to find blockers worth solving once, across teams.</p></div></div>
     <section class="card" style="margin-bottom:16px"><h2>Recurring blockers</h2><p class="muted">Sorted by measured blocks. Simulated traces are counted separately.</p>
       <div class="table-wrap"><table><thead><tr><th>Dimension</th><th class="num">Blocking now</th><th class="num">At baseline</th><th class="num">Open findings</th><th class="num">Services affected</th><th class="num">Simulated traces</th></tr></thead>
       <tbody>${top.map((r) => `<tr><td>${esc(r.label)}</td><td class="num">${r.measured_blocks_latest}</td><td class="num">${r.measured_blocks_baseline}</td>
@@ -258,6 +277,27 @@ async function renderTraces() {
     <tbody>${traces.map(traceRow).join("")}</tbody></table></div></section>`;
 }
 
+function jobTable(id, heading, note, jobs, status) {
+  return `<section class="card" id="${id}" style="margin-bottom:16px"><h2>${heading}</h2><p class="muted">${note}</p>
+    <div class="table-wrap"><table><thead><tr><th>Job</th><th>Why</th><th>Status</th></tr></thead>
+    <tbody>${jobs.map(([job, why]) => `<tr><td>${esc(job)}</td><td>${esc(why)}</td><td>${status}</td></tr>`).join("")}</tbody></table></div></section>`;
+}
+
+async function renderAutomation() {
+  const { automation } = await api("/overview");
+  view.innerHTML = `<div class="page-head"><div><h1>Scripts first, AI where it is needed</h1>
+      <p class="sub">Use a script when the answer is a fact. Use an AI agent when the job needs judgement, or when the agent's own behaviour is being measured.</p></div></div>
+    <section class="grid tiles" id="counts">
+      ${tile("Assessments by script", automation.assessments, "Since the last reset")}
+      ${tile("Task runs by script", automation.task_runs, "Since the last reset")}
+      ${tile("AI model calls", 0, "No AI is used in this prototype")}
+      ${tile("Estimated saving", "Not measured", "Needs real agent runs")}
+    </section>
+    ${jobTable("script-jobs", "Scripts handle", "Fast, repeatable and cheap, so they can run on every change.", SCRIPT_JOBS, "Built")}
+    ${jobTable("ai-jobs", "AI agents handle", "Reserved for a sample of tasks and for work scripts cannot judge.", AI_JOBS, "Planned")}
+    <div class="callout" id="cost-note"><strong>How this lowers cost:</strong> scripts screen every service on every change, and agents run only on a small sample. When an agent finds a repeatable failure, it becomes a new script check.</div>`;
+}
+
 async function route() {
   const hash = location.hash.replace(/^#\/?/, "");
   const [page, id] = hash.split("/");
@@ -271,6 +311,7 @@ async function route() {
     else if (page === "remediation") await renderRemediation();
     else if (page === "platform") await renderPlatform();
     else if (page === "traces") await renderTraces();
+    else if (page === "automation") await renderAutomation();
     else await renderOverview();
   } catch (error) {
     view.innerHTML = `<p class="error" role="alert">${esc(error.message)}</p>`;

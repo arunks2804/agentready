@@ -2,9 +2,9 @@
 
 > **One-line proposition:** Identify what prevents AI coding agents from completing work on enterprise repositories and services, assign each gap to the team that owns it, and prove with a rerun whether the fix actually helped.
 
-> **Status:** Working prototype. Three fictional sample services run through the full loop in a FastAPI and SQLite application with a plain JavaScript dashboard, 14 automated tests and a reproducible recorded demo: assess → run the task → find the blocker → assign → fix → reassess. Task outcomes come from a deterministic scripted probe that really runs each sample repository's tests. **No real LLM agent has been run.** Failed agent traces are simulated fixtures, labelled in the product and excluded from task completion.
+> **Status:** Working prototype. Three fictional sample services run through the full loop in a FastAPI and SQLite application with a plain JavaScript dashboard, 14 automated tests and a reproducible recorded demo: assess → run the task → find the blocker → assign → fix → reassess. Task outcomes come from a deterministic scripted probe, which either stops at a missing prerequisite or runs the sample repository's tests. **No real AI agent has been run**, so the AI proposition below is still a hypothesis. Failed agent traces are simulated fixtures, labelled in the product and excluded from task completion.
 
-**Contents:** [Overview](#1-product-overview) · [Demo](#product-demo) · [Problem](#2-the-problem) · [Users](#3-target-users) · [Value](#4-value-proposition) · [Capabilities](#5-product-capabilities) · [Architecture](#6-product-architecture) · [Workflows](#7-user-workflows) · [Metrics](#8-success-metrics) · [Decisions](#9-product-decisions-and-trade-offs) · [Scope & limitations](#10-prototype-scope-and-limitations) · [What comes next](#11-what-comes-next)
+**Contents:** [Overview](#1-product-overview) · [Demo](#product-demo) · [Problem](#2-the-problem) · [Users](#3-target-users) · [Value](#4-value-proposition) · [Capabilities](#5-product-capabilities) · [Scripts, AI and cost](#scripts-first-ai-where-it-is-needed) · [Architecture](#6-product-architecture) · [Workflows](#7-user-workflows) · [Metrics](#8-success-metrics) · [Decisions](#9-product-decisions-and-trade-offs) · [Scope & limitations](#10-prototype-scope-and-limitations) · [What comes next](#11-what-comes-next)
 
 Setup and run instructions are in [README.md](README.md).
 
@@ -28,8 +28,7 @@ Each step produces the input the next one needs. The objective is not to raise a
 | | |
 |---|---|
 | **Product** | AgentReady: AI Coding Agent Readiness Assessment Platform |
-| **Primary users** | Service-owning engineering teams, the AI coding-agent platform team, engineering managers, engineers operating coding agents |
-| **Secondary stakeholder** | Platform Product Manager |
+| **Users** | Service-owning engineering teams, the AI coding-agent platform team, engineering managers, engineers operating coding agents |
 | **Prototype** | FastAPI + SQLite backend, plain JavaScript dashboard, Playwright demo |
 | **Sample services** | billing-service, notifications-service, identity-service (all fictional) |
 
@@ -41,7 +40,7 @@ Each step produces the input the next one needs. The objective is not to raise a
 
 [![AgentReady product demo — click to play the narrated walkthrough](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated demo (under 5 min, 1920×1080, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4)
+**▶ [Watch the narrated demo (6 min, 1920×1080, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4)
 
 The demo is written so that someone outside the field, a senior executive for example, can follow it without prior knowledge. Plain-English slides come first. Each chapter then shows the real application with a visible pointer and zoom-ins on the evidence. All application footage is a live Playwright recording, and every number spoken or captioned is read from the page while it records. The British voiceover is AI-generated with Piper, which runs locally.
 
@@ -52,8 +51,9 @@ The demo is written so that someone outside the field, a senior executive for ex
 | 2 · Finding the real blocker | billing-service scores 88, yet its task stops at one undocumented setting. The evidence and owning team are shown |
 | 3 · A higher score is not proof | Two fixes raise the score to 97. The task stays blocked and the finding reopens |
 | 4 · The fix that works | A working sample config. The score does not move, and the task completes |
-| 5 · The leadership view | Recurring blockers, the readiness heatmap, and simulated traces kept separate |
+| 5 · A view for each team | The team queue, recurring blockers, the readiness heatmap, and simulated traces kept separate |
 | 6 · Blockers in layers | notifications-service: each fix reveals the next blocker, and the task completes at a score of 41 |
+| 7 · Scripts first, AI where it counts | What scripts handle, what needs an AI agent, how that lowers cost, and why the saving is not measured yet |
 | Summary | Before and after, read from the live run |
 
 Re-record it yourself: `python scripts/record_demo.py` (needs `requirements-demo.txt`, a Piper voice and ffmpeg; see the README).
@@ -80,31 +80,32 @@ Current practice fails in predictable ways:
 
 ## 3. Target Users
 
-An early draft treated the Platform Product Manager as the primary user. That was wrong. The people who act on a finding are the engineers who own the service and those who run the agents, so they are the primary users. The Platform PM uses the aggregate view.
+AgentReady has four personas. Two sit on either side of the problem: one team can fix the cause, and the other sees agents fail. The other two decide where the work and the agents go.
 
-### Persona 1 — Service-owning engineering team (primary)
+### Persona 1 — Service-owning engineering team
 *"Tell me what is stopping agents on my service, and prove it. Don't hand me another checklist."*
 
 **Responsibilities:** owns the service, its documentation, test setup and configuration.
 
 **Challenges:**
 - Generic readiness advice with no evidence or priority.
-- No way to know which gap actually stops work.
+- No way to know which gap actually stops work, or whether a fix helped.
 
-**How AgentReady helps:** findings arrive assigned, with the file, line or command output behind them. Only something that really stopped a task is ranked as a blocker.
+**How AgentReady helps:** findings arrive assigned, with the file, line or command output behind them. A retry shows whether the fix worked.
 
-### Persona 2 — AI coding-agent platform team (primary)
-*"Is this failure ours, or the service's?"*
+### Persona 2 — AI coding-agent platform team
+*"Is this failure ours or the service's, and which problems are worth solving once for everybody?"*
 
 **Responsibilities:** runs agent infrastructure and is judged on whether agents succeed across the organisation.
 
 **Challenges:**
 - Failures are hard to separate into agent problems and repository problems.
 - No route from a failed run to the team that can fix it.
+- The same blocker appears across many services as unrelated incidents.
 
-**How AgentReady helps:** failed traces are matched to a likely cause and linked to the owner's finding, with measured runs kept separate from simulated ones.
+**How AgentReady helps:** failed traces are matched to a likely cause and linked to the owner's finding. The aggregate view shows recurring blockers, so a shared problem can be solved centrally.
 
-### Persona 3 — Engineering manager (primary)
+### Persona 3 — Engineering manager
 *"Which of this work is worth my team's time?"*
 
 **Responsibilities:** prioritises team capacity and accounts for agent adoption.
@@ -114,20 +115,15 @@ An early draft treated the Platform Product Manager as the primary user. That wa
 
 **How AgentReady helps:** a team queue ordered by severity, and verification that shows which fixes changed the outcome.
 
-### Persona 4 — Engineer operating a coding agent (primary)
+### Persona 4 — Engineer operating a coding agent
 *"Before I point an agent at this service, will it work?"*
 
 **Responsibilities:** assigns tasks to agents and reviews the output.
 
 **Challenges:**
-- Time lost to runs that were never going to succeed.
+- Time and money lost on runs that were never going to succeed.
 
 **How AgentReady helps:** the latest task result and known blocker are visible before a task is assigned.
-
-### Secondary stakeholder — Platform Product Manager
-*"Which blockers are worth solving once, for everybody?"*
-
-Uses aggregate findings to see recurring blockers, prioritise investment and shape the platform roadmap.
 
 ---
 
@@ -166,6 +162,8 @@ The prototype applies 17 weighted checks that read files on disk. Each dimension
 ### Capability 3 — Measured task runs
 A scripted probe walks the path an agent would take: find the service, locate the code, read the API contract when the ticket needs it, find the test command, prepare a clean environment using only documented settings, apply the known correct change, and run the tests. It stops at the first gap. Runs use a throwaway copy with a 30-second limit.
 
+The probe stops in two ways, and they are different kinds of evidence. A **test failure** comes from really running the tests, as with billing-service. A **rule-based stop** means the script found a prerequisite missing and stopped before any test ran, as with all three notifications-service blocks. A rule-based stop shows the script's assumption, not that a real agent would be stopped.
+
 ### Capability 4 — Failed trace analysis
 Failed agent traces are matched to a likely cause by rule-based signatures and linked to any existing finding. The step and quoted output that triggered the match are shown. Unmatched traces stay "Unclassified" rather than being guessed at.
 
@@ -180,6 +178,46 @@ Reassessment repeats the static checks and the task. **It is the only way a find
 
 ### Capability 8 — Dashboard and platform insights
 The overview leads with task completion. Each service page shows the run step by step, its findings, and score and outcome over time. The platform view shows recurring blockers and a readiness heatmap.
+
+## Scripts first, AI where it is needed
+
+**Principle:** use a script when the answer is a fact. Use an AI agent only when the question needs judgement, or when the agent's own behaviour is what is being measured. Scripts are repeatable, cheap and easy to audit, so they stay the default.
+
+| Job | Handled by | Why |
+|---|---|---|
+| Check that files, contracts, CI and owners exist | **Script** | These are facts |
+| Build the service and run its tests in a clean environment | **Script** | Pass or fail needs no judgement |
+| Rerun checks after a fix, on every change | **Script** | Must be repeatable and cheap |
+| Match known failure signatures | **Script** | A rule can cite the exact step |
+| Route findings, track status, calculate metrics | **Script** | Plain workflow |
+| **Attempt a real task with no known answer** | **AI agent** | Only an agent can show what stops an agent. This is the proof the product depends on |
+| Explain new failures that match no known signature | **AI agent** | Needs reading and judgement, and must cite the trace |
+| Judge whether documentation is usable, not just present | **AI agent** | A file can exist and still be useless |
+| Decide whether a ticket gives enough context | **AI agent** | Needs interpretation |
+| Draft a specific fix for the owner to review | **AI agent, with human review** | Saves effort, and a person stays accountable |
+
+**How the two work together:**
+
+1. Scripts screen every service, on every change.
+2. A real agent runs a small sample of tasks, before and after remediation, to measure the outcome that matters.
+3. When agent runs reveal a repeatable failure, that failure becomes a new script check. Over time, AI finds the problems and scripts catch them cheaply.
+4. Agent results also show which checks predict completion, and checks that predict nothing get dropped.
+
+**The one place AI cannot be replaced:** a script cannot prove the core claim that readiness work helps agents complete tasks. A script can show that a repository's tests pass. A real agent might work around a gap the script treats as a blocker, or fail on something the script never has to understand.
+
+### How this reduces cost
+
+Agent runs consume model usage and engineering review time, so running an agent on every service for every change is the expensive path. AgentReady avoids it in three ways:
+
+- **Scripts catch known gaps first,** so no agent run is spent on a task that was bound to fail.
+- **Agents run on a sample,** not on every change.
+- **Each repeatable failure becomes a script check,** so the share of work that needs AI should fall over time.
+
+In the reference run, all 9 assessments and 9 task runs were done by scripts, with 0 AI model calls. That is only a count: **no saving has been measured**, because the comparison needs real agent runs and their cost.
+
+**What to measure once agents run:** cost per agent attempt, the share of failed attempts a script could have predicted, and the cost per completed task with and without script screening.
+
+**What exists today:** the prototype implements the script side only. Every AI agent role above is planned and untested.
 
 ---
 
@@ -221,7 +259,7 @@ The team starts remediation, makes the change and submits it. Reassessment rerun
 Fixing one blocker lets the task travel further and reveal the next. notifications-service moves from discovery to API context to testing before it completes.
 
 ### Workflow 4 — Plan platform investment
-The Platform PM reviews recurring blockers across services to decide what to solve centrally, such as a shared environment template, instead of team by team.
+The AI coding-agent platform team reviews recurring blockers across services to decide what to solve centrally, such as a shared environment template, instead of team by team.
 
 ---
 
@@ -248,7 +286,8 @@ The full per-step evidence is in [docs/examples/SUMMARY.md](docs/examples/SUMMAR
 | Decision | Chosen | Alternatives considered | Why |
 |---|---|---|---|
 | Primary metric | **Task completion** | Readiness score | A score can rise with no effect on work, which the demo shows directly |
-| Primary user | **Service owners and agent operators** | Platform PM | Those users act on findings; the PM works from the aggregate view |
+| Personas | **Four: service owners, platform team, engineering managers, agent operators** | Fewer, merged roles | Each makes different decisions from the same evidence |
+| Role of AI | **Scripts by default, AI where judgement or real agent behaviour is needed** | AI for everything, or no AI at all | Facts should be cheap and repeatable, but only a real agent can prove the outcome |
 | Score and outcome | **Always shown apart, never blended** | One composite number | A blend would hide the exact gap the product exists to expose |
 | Who verifies | **Only reassessment** | Team marks a ticket done | Self-reported fixes are the failure this product addresses |
 | Blocker severity | **Only from a measured stop** | Fixed severity per check | Evidence should set priority, not a static rule |
@@ -273,7 +312,8 @@ The full per-step evidence is in [docs/examples/SUMMARY.md](docs/examples/SUMMAR
 - Team fixes in the demo stand in for commits. The reassessment after them is real.
 
 **Scripted:**
-- The probe is not an AI. It applies a known correct change, so it tests whether the repository lets a task finish. It says nothing about an LLM's ability to write that change.
+- The probe is not an AI. It is told the target file and applies a known correct change, so it says nothing about an AI's ability to write that change.
+- Blocks can reflect the probe's own rules. Billing-service's blocks are real test failures; notifications-service's three blocks are rule-based stops, and the app labels them that way.
 
 **Intentionally constructed:**
 - The sample repositories, tickets and teams are fictional, and two services are deliberately flawed. Their failures are genuine test executions, not hard-coded results.
@@ -291,7 +331,7 @@ The full per-step evidence is in [docs/examples/SUMMARY.md](docs/examples/SUMMAR
 
 ## 11. What Comes Next
 
-1. **Test the central hypothesis.** Run a real coding agent on a fixed task set in real repositories, before and after remediation, and compare completion rates.
+1. **Add the AI agent run and test the central hypothesis.** Run a real coding agent on a fixed task set in real repositories, before and after remediation, and compare completion rates.
 2. **Learn which checks predict completion.** Use those runs to replace judgement-based weights with evidence.
 3. **Ingest real traces** from an agent platform, with findings created from them.
 4. **Connect ownership systems:** service catalog, issue tracker and CI, so findings reach teams where they already work.

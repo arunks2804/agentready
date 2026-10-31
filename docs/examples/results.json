@@ -95,7 +95,7 @@
       "baseline": 65,
       "latest": 65
     },
-    "time_to_identify_ms": 19,
+    "time_to_identify_ms": 17,
     "time_to_remediate_s": null,
     "findings": {
       "open": 19,
@@ -180,14 +180,18 @@
         "simulated_traces": 0
       }
     ],
+    "automation": {
+      "assessments": 3,
+      "task_runs": 3
+    },
     "services": [
       {
         "id": "billing-service",
         "name": "billing-service",
         "team": "team-billing",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/billing-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/billing-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:21:13.647+00:00",
+        "created_at": "2026-10-31T13:49:29.925+00:00",
         "score": 88,
         "baseline_score": 88,
         "dimensions": {
@@ -200,7 +204,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:21:13.686+00:00",
+        "assessed_at": "2026-10-31T13:49:29.960+00:00",
         "latest_run": {
           "id": 1,
           "service_id": "billing-service",
@@ -251,11 +255,11 @@
               "dimension": "build_environment",
               "status": "blocked",
               "detail": "python -m unittest discover -s tests exited 1.",
-              "output": "E.\n======================================================================\nERROR: test_prorated_total_includes_tax (test_proration.ProrationTest.test_prorated_total_includes_tax)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-ysou4xiv/repo/tests/test_proration.py\", line 16, in test_prorated_total_includes_tax\n    self.assertEqual(with_tax(prorate(1000, 2, 3), \"CA\"), 717)\n                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-ysou4xiv/repo/tests/../src/billing/tax.py\", line 11, in with_tax\n    return round(amount_cents * (1 + rate_for(region)))\n                                     ~~~~~~~~^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-ysou4xiv/repo/tests/../src/billing/tax.py\", line 6, in rate_for\n    with open(os.environ[\"BILLING_TAX_TABLE_PATH\"], encoding=\"utf-8\") as f:\n              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 717, in __getitem__\nKeyError: 'BILLING_TAX_TABLE_PATH'\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nFAILED (errors=1)\n"
+              "output": "E.\n======================================================================\nERROR: test_prorated_total_includes_tax (test_proration.ProrationTest.test_prorated_total_includes_tax)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-1_p1xanm/repo/tests/test_proration.py\", line 16, in test_prorated_total_includes_tax\n    self.assertEqual(with_tax(prorate(1000, 2, 3), \"CA\"), 717)\n                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-1_p1xanm/repo/tests/../src/billing/tax.py\", line 11, in with_tax\n    return round(amount_cents * (1 + rate_for(region)))\n                                     ~~~~~~~~^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-1_p1xanm/repo/tests/../src/billing/tax.py\", line 6, in rate_for\n    with open(os.environ[\"BILLING_TAX_TABLE_PATH\"], encoding=\"utf-8\") as f:\n              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 717, in __getitem__\nKeyError: 'BILLING_TAX_TABLE_PATH'\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nFAILED (errors=1)\n"
             }
           ],
-          "duration_ms": 38,
-          "created_at": "2026-10-31T13:21:13.686+00:00"
+          "duration_ms": 34,
+          "created_at": "2026-10-31T13:49:29.960+00:00"
         },
         "open_findings": 3,
         "blockers": 1
@@ -264,9 +268,9 @@
         "id": "notifications-service",
         "name": "notifications-service",
         "team": "team-messaging",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/notifications-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/notifications-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:21:13.688+00:00",
+        "created_at": "2026-10-31T13:49:29.962+00:00",
         "score": 12,
         "baseline_score": 12,
         "dimensions": {
@@ -279,7 +283,7 @@
           "delivery": 0,
           "task_context": 0
         },
-        "assessed_at": "2026-10-31T13:21:13.689+00:00",
+        "assessed_at": "2026-10-31T13:49:29.963+00:00",
         "latest_run": {
           "id": 2,
           "service_id": "notifications-service",
@@ -299,7 +303,7 @@
             }
           ],
           "duration_ms": 0,
-          "created_at": "2026-10-31T13:21:13.689+00:00"
+          "created_at": "2026-10-31T13:49:29.963+00:00"
         },
         "open_findings": 15,
         "blockers": 1
@@ -308,9 +312,9 @@
         "id": "identity-service",
         "name": "identity-service",
         "team": "team-identity",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/identity-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/identity-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:21:13.693+00:00",
+        "created_at": "2026-10-31T13:49:29.967+00:00",
         "score": 96,
         "baseline_score": 96,
         "dimensions": {
@@ -323,7 +327,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:21:13.730+00:00",
+        "assessed_at": "2026-10-31T13:49:30.001+00:00",
         "latest_run": {
           "id": 3,
           "service_id": "identity-service",
@@ -377,8 +381,8 @@
               "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
             }
           ],
-          "duration_ms": 36,
-          "created_at": "2026-10-31T13:21:13.730+00:00"
+          "duration_ms": 32,
+          "created_at": "2026-10-31T13:49:30.001+00:00"
         },
         "open_findings": 1,
         "blockers": 0
@@ -486,14 +490,18 @@
         "simulated_traces": 0
       }
     ],
+    "automation": {
+      "assessments": 9,
+      "task_runs": 9
+    },
     "services": [
       {
         "id": "billing-service",
         "name": "billing-service",
         "team": "team-billing",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/billing-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/billing-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:21:13.647+00:00",
+        "created_at": "2026-10-31T13:49:29.925+00:00",
         "score": 97,
         "baseline_score": 88,
         "dimensions": {
@@ -506,7 +514,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:21:13.861+00:00",
+        "assessed_at": "2026-10-31T13:49:30.131+00:00",
         "latest_run": {
           "id": 6,
           "service_id": "billing-service",
@@ -560,8 +568,8 @@
               "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
             }
           ],
-          "duration_ms": 35,
-          "created_at": "2026-10-31T13:21:13.862+00:00"
+          "duration_ms": 34,
+          "created_at": "2026-10-31T13:49:30.131+00:00"
         },
         "open_findings": 1,
         "blockers": 0
@@ -570,9 +578,9 @@
         "id": "notifications-service",
         "name": "notifications-service",
         "team": "team-messaging",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/notifications-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/notifications-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:21:13.688+00:00",
+        "created_at": "2026-10-31T13:49:29.962+00:00",
         "score": 41,
         "baseline_score": 12,
         "dimensions": {
@@ -585,7 +593,7 @@
           "delivery": 0,
           "task_context": 0
         },
-        "assessed_at": "2026-10-31T13:21:13.951+00:00",
+        "assessed_at": "2026-10-31T13:49:30.184+00:00",
         "latest_run": {
           "id": 9,
           "service_id": "notifications-service",
@@ -646,8 +654,8 @@
               "output": "retry check 4\nretry check 5\n.\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
             }
           ],
-          "duration_ms": 64,
-          "created_at": "2026-10-31T13:21:13.951+00:00"
+          "duration_ms": 29,
+          "created_at": "2026-10-31T13:49:30.184+00:00"
         },
         "open_findings": 10,
         "blockers": 0
@@ -656,9 +664,9 @@
         "id": "identity-service",
         "name": "identity-service",
         "team": "team-identity",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/identity-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/identity-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:21:13.693+00:00",
+        "created_at": "2026-10-31T13:49:29.967+00:00",
         "score": 96,
         "baseline_score": 96,
         "dimensions": {
@@ -671,7 +679,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:21:13.730+00:00",
+        "assessed_at": "2026-10-31T13:49:30.001+00:00",
         "latest_run": {
           "id": 3,
           "service_id": "identity-service",
@@ -725,8 +733,8 @@
               "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
             }
           ],
-          "duration_ms": 36,
-          "created_at": "2026-10-31T13:21:13.730+00:00"
+          "duration_ms": 32,
+          "created_at": "2026-10-31T13:49:30.001+00:00"
         },
         "open_findings": 1,
         "blockers": 0
