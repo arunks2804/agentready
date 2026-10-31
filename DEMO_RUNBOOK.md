@@ -246,25 +246,21 @@ python3 -m uvicorn app.main:app --port 8010
 
 ## 8. The recorded video
 
-Video: https://arunks2804.github.io/agentready/
+Video: https://arunks2804.github.io/agentready/ (7:53, with full captions)
 
 | Time | Part | What it covers |
 |---|---|---|
-| 0:02 | Opening | The problem, the five steps and what is simulated |
-| 1:02 | 1 · Where we start | One of three tasks finishes |
-| 1:25 | 2 · What stopped the task | The missing setting, and the recommended fix |
-| 2:22 | 3 · The team fixes it | The fix is applied, and the task finishes |
-| 2:47 | 4 · A view for each team | Team work lists and recurring problems |
-| 3:12 | 5 · A service with three blockers | Three fixes, one at a time |
-| 4:19 | 6 · Scripts first, AI where it counts | Scripts, AI and cost |
-| 5:18 | Summary | Before and after |
+| 0:02 | Opening | The problem, the five steps, and how the demo works |
+| 0:43 | How this demo works | No AI runs. The script stands in for a coding agent, using a prepared code change |
+| 1:22 | 1 · Where we start | One of three tickets completes |
+| 1:45 | 2 · What blocked the ticket | BILL-2141, the undocumented environment variable and the recommended fix |
+| 2:52 | 3 · The team fixes it | The recommended fix is applied, and the rerun completes |
+| 3:16 | 4 · A view for each team | Remediation queues and recurring blockers |
+| 3:43 | 5 · A ticket with three blockers | NOTIF-877, one layer at a time |
+| 6:21 | 6 · Scripts first, AI where it counts | Scripts, what a real coding agent would do, and cost |
+| 7:38 | Summary | Before and after, and the next step |
 
-**Known wording issues in the video:**
-- At 1:40, the voice says the script "makes the fix". It actually copies in the prepared code change.
-- At 1:33, the voice describes the ticket in everyday words. The real term is **proration rounding defect**.
-- The video doesn't say that the script can only stand in for a coding agent because the code change is prepared.
-
-Until the video is re-recorded, say those points out loud.
+Captions show the exact technical names, such as `BILLING_TAX_TABLE_PATH`. The voice says them as separate words so they can be pronounced.
 
 ---
 

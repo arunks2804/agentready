@@ -40,20 +40,20 @@ Each step produces the input the next one needs. The objective is not to raise a
 
 [![AgentReady product demo — click to play the narrated walkthrough](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated demo (5½ min, 1920×1080, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4)
+**▶ [Watch the narrated demo (8 min, 1920×1080, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4)
 
-The demo is written so that someone outside the field, a senior executive for example, can follow it without prior knowledge. Plain-English slides come first. Each chapter then shows the real application with a visible pointer and zoom-ins on the evidence. All application footage is a live Playwright recording, and every number spoken or captioned is read from the page while it records. The full voiceover appears as captions. The British voiceover is AI-generated with Piper, which runs locally.
+The demo is written so that someone outside the field, a senior executive for example, can follow it without prior knowledge. Plain-English slides come first. Each chapter then shows the real application with a visible pointer and zoom-ins on the evidence. All application footage is a live Playwright recording, and every number spoken or captioned is read from the page while it records. The full voiceover appears as captions. The British voiceover is AI-generated with Piper, which runs locally. [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md) explains exactly what is real, prepared and simulated.
 
 | Part | What it explains and shows |
 |---|---|
-| Opening | Why skilled assistants still get stuck; the new-starter comparison; the five steps; what is simulated |
-| 1 · Where we start | **1 of 3 tasks finish**, and billing-service is blocked with a score of 88 |
-| 2 · What stopped the task | A missing tax rate file stops the tests. AgentReady shows the evidence and one recommended fix |
-| 3 · The team fixes it | The team applies the recommended fix, the same task is tried again, and it finishes |
-| 4 · A view for each team | Each team's work list, and the problems that come up most |
-| 5 · A service with three blockers | notifications-service is fixed one blocker at a time and finishes at a score of 41 |
-| 6 · Scripts first, AI where it counts | What scripts handle, what needs AI, and why the cost saving is not measured yet |
-| Summary | Tasks finished before and after, read from the live run |
+| Opening | Why skilled coding agents still get stuck; the five steps; how the demo works: no AI runs, and a script stands in for a coding agent using a prepared code change |
+| 1 · Where we start | **1 of 3 tickets complete**, and billing-service is blocked with a score of 88 |
+| 2 · What blocked the ticket | BILL-2141: the unit tests fail on the undocumented `BILLING_TAX_TABLE_PATH` environment variable. AgentReady shows the evidence and one recommended fix |
+| 3 · The team fixes it | team-billing applies the recommended fix, the ticket is rerun, and it completes |
+| 4 · A view for each team | Remediation queues and recurring blockers |
+| 5 · A ticket with three blockers | NOTIF-877: the service catalog entry, API contract and test command, one layer at a time. It completes at a score of 41 |
+| 6 · Scripts first, AI where it counts | What scripts handle, what a real coding agent would do, and why the cost saving is not measured yet |
+| Summary | Tickets completed before and after, read from the live run |
 
 The demo shows the direct path only. The app can also show that a rising score is not proof and that an incomplete fix gets caught on retry: open **Other changes to try** on billing-service. Those results are in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
 
