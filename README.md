@@ -48,9 +48,9 @@ rate improves. That is the next thing to test.
 
 ## Scripts first, AI where it is needed
 
-Scripts handle facts: file checks, builds and tests, reruns, known failure signatures, routing and metrics. An AI agent is needed where judgement is required or where agent behaviour is the thing being measured: attempting real tasks, explaining new failures, judging whether documentation is usable, and drafting fixes for review.
+Scripts handle facts: file checks, builds and tests, reruns, known failure signatures, routing and metrics. AI is needed where judgement is required or where agent behaviour is the thing being measured, and there are two separate roles. A **coding agent**, an existing tool, attempts real tasks. The **Gap Analysis Agent**, part of AgentReady, explains new failures, judges whether documentation is usable, and drafts fixes for review.
 
-That split keeps cost down, because agents run on a sample while scripts screen every change. The saving is not measured yet. This prototype implements the script side only. See [the brief](PRODUCT_BRIEF.md#scripts-first-ai-where-it-is-needed) for the full split.
+That split keeps cost down, because agents run on a sample while scripts screen every change. The saving is not measured yet. This prototype implements the script side only; both AI roles are planned. See [the brief](PRODUCT_BRIEF.md#scripts-first-ai-where-it-is-needed) for the full split.
 
 ## Reproduce the results and the demo
 

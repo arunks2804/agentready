@@ -183,6 +183,11 @@ The overview leads with task completion. Each service page shows the run step by
 
 **Principle:** use a script when the answer is a fact. Use an AI agent only when the question needs judgement, or when the agent's own behaviour is what is being measured. Scripts are repeatable, cheap and easy to audit, so they stay the default.
 
+Two different AI agents are involved, and they should not be confused:
+
+- **Coding agent:** an existing tool that attempts the real task. AgentReady does not build it. Its success or failure is the evidence.
+- **Gap Analysis Agent:** part of AgentReady. It reads failed runs that scripts cannot explain, identifies the likely cause and cites the evidence. It never attempts the task, and it cannot prove a fix worked.
+
 | Job | Handled by | Why |
 |---|---|---|
 | Check that files, contracts, CI and owners exist | **Script** | These are facts |
@@ -190,20 +195,20 @@ The overview leads with task completion. Each service page shows the run step by
 | Rerun checks after a fix, on every change | **Script** | Must be repeatable and cheap |
 | Match known failure signatures | **Script** | A rule can cite the exact step |
 | Route findings, track status, calculate metrics | **Script** | Plain workflow |
-| **Attempt a real task with no known answer** | **AI agent** | Only an agent can show what stops an agent. This is the proof the product depends on |
-| Explain new failures that match no known signature | **AI agent** | Needs reading and judgement, and must cite the trace |
-| Judge whether documentation is usable, not just present | **AI agent** | A file can exist and still be useless |
-| Decide whether a ticket gives enough context | **AI agent** | Needs interpretation |
-| Draft a specific fix for the owner to review | **AI agent, with human review** | Saves effort, and a person stays accountable |
+| **Attempt a real task with no known answer** | **Coding agent** | Only an agent can show what stops an agent. This is the proof the product depends on |
+| Explain new failures that match no known signature | **Gap Analysis Agent** | Needs reading and judgement, and must cite the trace |
+| Judge whether documentation is usable, not just present | **Gap Analysis Agent** | A file can exist and still be useless |
+| Decide whether a ticket gives enough context | **Gap Analysis Agent** | Needs interpretation |
+| Draft a specific fix for the owner to review | **Gap Analysis Agent, with human review** | Saves effort, and a person stays accountable |
 
 **How the two work together:**
 
 1. Scripts screen every service, on every change.
-2. A real agent runs a small sample of tasks, before and after remediation, to measure the outcome that matters.
-3. When agent runs reveal a repeatable failure, that failure becomes a new script check. Over time, AI finds the problems and scripts catch them cheaply.
-4. Agent results also show which checks predict completion, and checks that predict nothing get dropped.
+2. A coding agent runs a small sample of tasks, before and after remediation, to measure the outcome that matters.
+3. The Gap Analysis Agent explains failures that scripts cannot match. When a failure proves repeatable, it becomes a new script check, so AI finds the problems and scripts catch them cheaply.
+4. Coding agent results also show which checks predict completion, and checks that predict nothing get dropped.
 
-**The one place AI cannot be replaced:** a script cannot prove the core claim that readiness work helps agents complete tasks. A script can show that a repository's tests pass. A real agent might work around a gap the script treats as a blocker, or fail on something the script never has to understand.
+**The one place AI cannot be replaced:** neither a script nor the Gap Analysis Agent can prove the core claim that readiness work helps agents complete tasks. Only a coding agent's before-and-after result can. A script can show that a repository's tests pass, but a real coding agent might work around a gap the script treats as a blocker, or fail on something the script never has to understand.
 
 ### How this reduces cost
 
@@ -217,7 +222,7 @@ In the reference run, all 9 assessments and 9 task runs were done by scripts, wi
 
 **What to measure once agents run:** cost per agent attempt, the share of failed attempts a script could have predicted, and the cost per completed task with and without script screening.
 
-**What exists today:** the prototype implements the script side only. Every AI agent role above is planned and untested.
+**What exists today:** the prototype implements the script side only. The coding agent runs and the Gap Analysis Agent are planned and untested.
 
 ---
 

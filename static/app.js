@@ -26,18 +26,18 @@ const provenance = (kind) => {
 };
 
 const SCRIPT_JOBS = [
-  ["Check that files, API contracts, CI and owners exist", "These are facts"],
-  ["Build the service and run its tests", "Pass or fail needs no judgement"],
-  ["Rerun checks after a fix", "Must be repeatable and cheap"],
-  ["Match known failure patterns", "A rule can cite the exact step"],
-  ["Route findings and calculate metrics", "Plain workflow"],
+  ["Check that files, API contracts, CI and owners exist", "Script", "These are facts"],
+  ["Build the service and run its tests", "Script", "Pass or fail needs no judgement"],
+  ["Rerun checks after a fix", "Script", "Must be repeatable and cheap"],
+  ["Match known failure patterns", "Script", "A rule can cite the exact step"],
+  ["Route findings and calculate metrics", "Script", "Plain workflow"],
 ];
 const AI_JOBS = [
-  ["Attempt a real task with no known answer", "Only an agent can show what stops an agent"],
-  ["Explain new failures that match no known pattern", "Needs reading and judgement"],
-  ["Judge whether documentation is usable", "A file can exist and still be useless"],
-  ["Decide whether a ticket gives enough context", "Needs interpretation"],
-  ["Draft a fix for the owner to review", "Saves effort, and a person stays accountable"],
+  ["Attempt a real task with no known answer", "Coding agent", "Only an agent can show what stops an agent"],
+  ["Explain new failures that match no known pattern", "Gap Analysis Agent", "Needs reading and judgement"],
+  ["Judge whether documentation is usable", "Gap Analysis Agent", "A file can exist and still be useless"],
+  ["Decide whether a ticket gives enough context", "Gap Analysis Agent", "Needs interpretation"],
+  ["Draft a fix for the owner to review", "Gap Analysis Agent", "Saves effort, and a person stays accountable"],
 ];
 
 function outcome(run) {
@@ -279,8 +279,8 @@ async function renderTraces() {
 
 function jobTable(id, heading, note, jobs, status) {
   return `<section class="card" id="${id}" style="margin-bottom:16px"><h2>${heading}</h2><p class="muted">${note}</p>
-    <div class="table-wrap"><table><thead><tr><th>Job</th><th>Why</th><th>Status</th></tr></thead>
-    <tbody>${jobs.map(([job, why]) => `<tr><td>${esc(job)}</td><td>${esc(why)}</td><td>${status}</td></tr>`).join("")}</tbody></table></div></section>`;
+    <div class="table-wrap"><table><thead><tr><th>Job</th><th>Handled by</th><th>Why</th><th>Status</th></tr></thead>
+    <tbody>${jobs.map(([job, by, why]) => `<tr><td>${esc(job)}</td><td>${esc(by)}</td><td>${esc(why)}</td><td>${status}</td></tr>`).join("")}</tbody></table></div></section>`;
 }
 
 async function renderAutomation() {
@@ -294,7 +294,7 @@ async function renderAutomation() {
       ${tile("Estimated saving", "Not measured", "Needs real agent runs")}
     </section>
     ${jobTable("script-jobs", "Scripts handle", "Fast, repeatable and cheap, so they can run on every change.", SCRIPT_JOBS, "Built")}
-    ${jobTable("ai-jobs", "AI agents handle", "Reserved for a sample of tasks and for work scripts cannot judge.", AI_JOBS, "Planned")}
+    ${jobTable("ai-jobs", "AI agents handle", "The coding agent attempts the task. The Gap Analysis Agent explains what scripts cannot.", AI_JOBS, "Planned")}
     <div class="callout" id="cost-note"><strong>How this lowers cost:</strong> scripts screen every service on every change, and agents run only on a small sample. When an agent finds a repeatable failure, it becomes a new script check.</div>`;
 }
 
