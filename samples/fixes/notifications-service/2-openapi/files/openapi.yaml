@@ -1,0 +1,12 @@
+openapi: 3.0.3
+info: {title: notifications-service, version: 0.9.0}
+paths:
+  /webhooks/deliver:
+    post:
+      summary: Deliver a webhook, retrying up to five attempts
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              example: {delivery_id: d_1, attempt: 1}

@@ -1,0 +1,3 @@
+name: identity-service
+owner: team-identity
+description: Login, account lookup, sessions and email normalisation

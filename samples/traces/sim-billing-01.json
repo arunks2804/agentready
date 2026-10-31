@@ -1,0 +1,7 @@
+{"external_id": "sim-billing-01", "service": "billing-service", "agent": "Simulated coding agent", "provenance": "simulated",
+ "title": "BILL-2141 proration fix", "outcome": "failed",
+ "events": [
+  {"step": 1, "action": "read src/billing/proration.py", "output": "ok"},
+  {"step": 2, "action": "edit src/billing/proration.py", "output": "replaced int() with round()"},
+  {"step": 3, "action": "python -m unittest discover -s tests", "output": "KeyError: 'BILLING_TAX_TABLE_PATH'"},
+  {"step": 4, "action": "give up", "output": "Could not determine a value for the required environment variable."}]}

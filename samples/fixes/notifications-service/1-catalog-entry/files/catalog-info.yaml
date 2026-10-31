@@ -1,0 +1,3 @@
+name: notifications-service
+owner: team-messaging
+description: Email, push and webhook delivery with retries

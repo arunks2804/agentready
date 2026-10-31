@@ -1,0 +1,3 @@
+{"id": "IDN-1520", "title": "Make account lookup ignore email case and spaces",
+ "keywords": ["email"], "target_file": "src/identity/accounts.py",
+ "acceptance_criteria": ["lookup('A@Example.com ') returns acc_1", "All service tests pass"]}

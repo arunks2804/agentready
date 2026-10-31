@@ -1,0 +1,3 @@
+{"id": "BILL-2141", "title": "Fix proration rounding: mid-cycle charges are a cent short",
+ "keywords": ["proration"], "target_file": "src/billing/proration.py",
+ "acceptance_criteria": ["prorate(1000, 2, 3) returns 667", "All service tests pass"]}

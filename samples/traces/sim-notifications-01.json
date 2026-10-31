@@ -1,0 +1,5 @@
+{"external_id": "sim-notifications-01", "service": "notifications-service", "agent": "Simulated coding agent", "provenance": "simulated",
+ "title": "NOTIF-877 webhook retry cap", "outcome": "failed",
+ "events": [
+  {"step": 1, "action": "search catalog for webhook", "output": "no matching service in catalog"},
+  {"step": 2, "action": "give up", "output": "Could not identify the owning repository."}]}

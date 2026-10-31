@@ -1,0 +1,12 @@
+openapi: 3.0.3
+info: {title: identity-service, version: 2.1.0}
+paths:
+  /accounts/lookup:
+    post:
+      summary: Find an account by email
+      responses:
+        "200":
+          description: Account
+          content:
+            application/json:
+              example: {id: acc_1, email: a@example.com}

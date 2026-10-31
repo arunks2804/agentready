@@ -1,0 +1,1 @@
+{"title": "Document the variable name only", "check_id": "env_vars_documented", "note": "Passes the static check, but the file it points to does not exist.", "order": 2}

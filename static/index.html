@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgentReady</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#/">AgentReady</a>
+    <nav aria-label="Main">
+      <a href="#/" data-nav="overview">Overview</a>
+      <a href="#/remediation" data-nav="remediation">Remediation</a>
+      <a href="#/platform" data-nav="platform">Platform insights</a>
+      <a href="#/traces" data-nav="traces">Agent traces</a>
+    </nav>
+    <button class="ghost" id="reset">Reset demo</button>
+  </header>
+  <main id="view" tabindex="-1"></main>
+  <div id="tooltip" role="status" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

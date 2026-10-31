@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentReady Demo</title>
+  <meta name="description" content="Narrated product demo of AgentReady, an AI coding agent readiness assessment platform." />
+  <style>
+    :root { --bg: #0c0d10; --ink: #f8fafc; --muted: #8dbdf3; --soft: #cbd5e1; --brand: #2a78d6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: radial-gradient(1200px 600px at 15% 0%, #123a6b 0%, var(--bg) 60%); color: var(--ink);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
+    main { max-width: 1200px; margin: 0 auto; padding: 40px 16px 56px; }
+    .kicker { color: var(--muted); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
+    h1 { font-size: clamp(30px, 5vw, 46px); margin: 8px 0 10px; letter-spacing: -.02em; }
+    p.lead { color: var(--soft); font-size: clamp(16px, 2.2vw, 19px); line-height: 1.55; margin: 0 0 24px; max-width: 860px; }
+    .player { background: #000; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); border: 1px solid rgba(141,189,243,.25); }
+    video { display: block; width: 100%; height: auto; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 18px; color: var(--soft); font-size: 15px; }
+    .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .links a { color: var(--ink); text-decoration: none; background: rgba(42,120,214,.18); border: 1px solid rgba(141,189,243,.45);
+      padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; }
+    .links a.primary { background: var(--brand); border-color: var(--brand); }
+    .links a:hover { filter: brightness(1.15); }
+    ol { color: var(--soft); line-height: 1.7; font-size: 15px; padding-left: 22px; margin: 28px 0 0; }
+    ol b { color: var(--ink); }
+    .note { margin-top: 26px; font-size: 13px; color: #94a3b8; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="kicker">Product demo · Under 5 minutes · with sound</div>
+    <h1>AgentReady</h1>
+    <p class="lead">A first-day test for your codebase. Find out what stops AI coding assistants from finishing work on a service, get it to the team that owns it, and prove the fix helped with a real retry.</p>
+    <div class="player">
+      <video controls preload="metadata" playsinline poster="demo/agentready-poster.png">
+        <source src="demo/agentready-demo.mp4" type="video/mp4" />
+        Your browser can't play this video. <a href="demo/agentready-demo.mp4">Download the MP4</a>.
+      </video>
+    </div>
+    <div class="meta">
+      <span>1920×1080 · British voiceover</span>
+      <span>Live recording of the working application</span>
+    </div>
+    <ol>
+      <li><b>Where we start:</b> one of three tasks completes, and the headline is work finished, not a score.</li>
+      <li><b>Finding the real blocker:</b> a service scoring 88 stopped by one undocumented setting.</li>
+      <li><b>A higher score is not proof:</b> two fixes lift the score to 97 while the task stays blocked.</li>
+      <li><b>The fix that works:</b> the score doesn't move, and the task completes.</li>
+      <li><b>The leadership view:</b> recurring blockers across services, with simulated data kept separate.</li>
+      <li><b>Blockers in layers:</b> each fix reveals the next, and the task completes at a score of 41.</li>
+    </ol>
+    <div class="links">
+      <a class="primary" href="https://github.com/arunks2804/agentready">View the repository</a>
+      <a href="https://github.com/arunks2804/agentready/blob/main/PRODUCT_BRIEF.md">Read the Product Brief</a>
+      <a href="demo/agentready-demo.mp4" download>Download the MP4</a>
+    </div>
+    <p class="note">The services are fictional, and tasks are run by a scripted test rather than an AI, so this shows the method and not real-world improvement. The voiceover is AI-generated (Piper, en-GB). All application footage is a live recording, and every number shown is computed by the running system.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{"external_id": "sim-billing-02", "service": "billing-service", "agent": "Simulated coding agent", "provenance": "simulated",
+ "title": "BILL-2188 add tax rounding test", "outcome": "failed",
+ "events": [
+  {"step": 1, "action": "python -m unittest discover -s tests", "output": "KeyError: 'BILLING_TAX_TABLE_PATH'"},
+  {"step": 2, "action": "give up", "output": "Test environment could not be configured."}]}

@@ -1,0 +1,5 @@
+{"external_id": "sim-identity-01", "service": "identity-service", "agent": "Simulated coding agent", "provenance": "simulated",
+ "title": "IDN-1533 session refresh edge case", "outcome": "failed",
+ "events": [
+  {"step": 1, "action": "inspect failing production request", "output": "no runbook for error code AUTH-41"},
+  {"step": 2, "action": "give up", "output": "Insufficient debugging information."}]}

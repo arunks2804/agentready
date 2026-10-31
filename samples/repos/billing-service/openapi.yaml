@@ -1,0 +1,12 @@
+openapi: 3.0.3
+info: {title: billing-service, version: 1.4.0}
+paths:
+  /invoices/{id}:
+    get:
+      summary: Fetch an invoice
+      responses:
+        "200":
+          description: Invoice
+          content:
+            application/json:
+              example: {id: inv_1, total_cents: 667}

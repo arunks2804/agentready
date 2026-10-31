@@ -1,0 +1,736 @@
+{
+  "services": {
+    "billing-service": [
+      {
+        "step": "Baseline",
+        "score": 88,
+        "task": "blocked",
+        "blocked_at": "build_environment",
+        "blocked_check": "env_vars_documented",
+        "finding_status": null
+      },
+      {
+        "step": "Add architecture overview",
+        "score": 92,
+        "task": "blocked",
+        "blocked_at": "build_environment",
+        "blocked_check": "env_vars_documented",
+        "finding_status": "verified"
+      },
+      {
+        "step": "Document the variable name only",
+        "score": 97,
+        "task": "blocked",
+        "blocked_at": "build_environment",
+        "blocked_check": "env_vars_documented",
+        "finding_status": "reopened"
+      },
+      {
+        "step": "Ship a working sample config",
+        "score": 97,
+        "task": "completed",
+        "blocked_at": null,
+        "blocked_check": null,
+        "finding_status": "verified"
+      }
+    ],
+    "notifications-service": [
+      {
+        "step": "Baseline",
+        "score": 12,
+        "task": "blocked",
+        "blocked_at": "discovery",
+        "blocked_check": "catalog_entry",
+        "finding_status": null
+      },
+      {
+        "step": "Register in the service catalog",
+        "score": 19,
+        "task": "blocked",
+        "blocked_at": "api_context",
+        "blocked_check": "api_spec",
+        "finding_status": "verified"
+      },
+      {
+        "step": "Publish the API contract",
+        "score": 32,
+        "task": "blocked",
+        "blocked_at": "testing",
+        "blocked_check": "test_command_documented",
+        "finding_status": "verified"
+      },
+      {
+        "step": "Document the test command",
+        "score": 41,
+        "task": "completed",
+        "blocked_at": null,
+        "blocked_check": null,
+        "finding_status": "verified"
+      }
+    ],
+    "identity-service": [
+      {
+        "step": "Baseline",
+        "score": 96,
+        "task": "completed",
+        "blocked_at": null,
+        "blocked_check": null,
+        "finding_status": null
+      }
+    ]
+  },
+  "baseline": {
+    "completion": {
+      "baseline": {
+        "completed": 1,
+        "total": 3
+      },
+      "latest": {
+        "completed": 1,
+        "total": 3
+      }
+    },
+    "unmeasured_services": 0,
+    "score": {
+      "baseline": 65,
+      "latest": 65
+    },
+    "time_to_identify_ms": 19,
+    "time_to_remediate_s": null,
+    "findings": {
+      "open": 19,
+      "verified": 0,
+      "reopened": 0
+    },
+    "repeat_failures": {
+      "baseline": 2,
+      "latest": 2
+    },
+    "recurring": [
+      {
+        "dimension": "discovery",
+        "label": "Discovery",
+        "open_findings": 2,
+        "services_affected": 1,
+        "measured_blocks_baseline": 1,
+        "measured_blocks_latest": 1,
+        "simulated_traces": 1
+      },
+      {
+        "dimension": "code_understanding",
+        "label": "Code understanding",
+        "open_findings": 5,
+        "services_affected": 2,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      },
+      {
+        "dimension": "api_context",
+        "label": "API context",
+        "open_findings": 2,
+        "services_affected": 1,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 1
+      },
+      {
+        "dimension": "build_environment",
+        "label": "Build environment",
+        "open_findings": 3,
+        "services_affected": 2,
+        "measured_blocks_baseline": 1,
+        "measured_blocks_latest": 1,
+        "simulated_traces": 2
+      },
+      {
+        "dimension": "testing",
+        "label": "Testing",
+        "open_findings": 1,
+        "services_affected": 1,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      },
+      {
+        "dimension": "debugging",
+        "label": "Debugging and observability",
+        "open_findings": 3,
+        "services_affected": 2,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 1
+      },
+      {
+        "dimension": "delivery",
+        "label": "Delivery workflow",
+        "open_findings": 2,
+        "services_affected": 1,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      },
+      {
+        "dimension": "task_context",
+        "label": "Task context",
+        "open_findings": 1,
+        "services_affected": 1,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      }
+    ],
+    "services": [
+      {
+        "id": "billing-service",
+        "name": "billing-service",
+        "team": "team-billing",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/billing-service",
+        "kind": "sample",
+        "created_at": "2026-10-31T13:21:13.647+00:00",
+        "score": 88,
+        "baseline_score": 88,
+        "dimensions": {
+          "discovery": 100,
+          "code_understanding": 50,
+          "api_context": 100,
+          "build_environment": 57,
+          "testing": 100,
+          "debugging": 100,
+          "delivery": 100,
+          "task_context": 100
+        },
+        "assessed_at": "2026-10-31T13:21:13.686+00:00",
+        "latest_run": {
+          "id": 1,
+          "service_id": "billing-service",
+          "assessment_id": 1,
+          "task_id": "BILL-2141",
+          "title": "Fix proration rounding: mid-cycle charges are a cent short",
+          "status": "blocked",
+          "blocked_check": "env_vars_documented",
+          "blocked_dimension": "build_environment",
+          "steps": [
+            {
+              "name": "Find the service",
+              "dimension": "discovery",
+              "status": "passed",
+              "detail": "Catalog entry catalog-info.yaml matches the ticket.",
+              "output": null
+            },
+            {
+              "name": "Locate the code",
+              "dimension": "code_understanding",
+              "status": "passed",
+              "detail": "Found src/billing/proration.py.",
+              "output": null
+            },
+            {
+              "name": "Find the test command",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "README.md: python -m unittest discover -s tests",
+              "output": null
+            },
+            {
+              "name": "Prepare the environment",
+              "dimension": "build_environment",
+              "status": "passed",
+              "detail": "Clean environment plus 0 documented variable(s) from .env.example.",
+              "output": null
+            },
+            {
+              "name": "Apply the code change",
+              "dimension": "task_context",
+              "status": "passed",
+              "detail": "Applied the known correct change for BILL-2141.",
+              "output": null
+            },
+            {
+              "name": "Run the tests",
+              "dimension": "build_environment",
+              "status": "blocked",
+              "detail": "python -m unittest discover -s tests exited 1.",
+              "output": "E.\n======================================================================\nERROR: test_prorated_total_includes_tax (test_proration.ProrationTest.test_prorated_total_includes_tax)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-ysou4xiv/repo/tests/test_proration.py\", line 16, in test_prorated_total_includes_tax\n    self.assertEqual(with_tax(prorate(1000, 2, 3), \"CA\"), 717)\n                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-ysou4xiv/repo/tests/../src/billing/tax.py\", line 11, in with_tax\n    return round(amount_cents * (1 + rate_for(region)))\n                                     ~~~~~~~~^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-ysou4xiv/repo/tests/../src/billing/tax.py\", line 6, in rate_for\n    with open(os.environ[\"BILLING_TAX_TABLE_PATH\"], encoding=\"utf-8\") as f:\n              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 717, in __getitem__\nKeyError: 'BILLING_TAX_TABLE_PATH'\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nFAILED (errors=1)\n"
+            }
+          ],
+          "duration_ms": 38,
+          "created_at": "2026-10-31T13:21:13.686+00:00"
+        },
+        "open_findings": 3,
+        "blockers": 1
+      },
+      {
+        "id": "notifications-service",
+        "name": "notifications-service",
+        "team": "team-messaging",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/notifications-service",
+        "kind": "sample",
+        "created_at": "2026-10-31T13:21:13.688+00:00",
+        "score": 12,
+        "baseline_score": 12,
+        "dimensions": {
+          "discovery": 0,
+          "code_understanding": 0,
+          "api_context": 0,
+          "build_environment": 43,
+          "testing": 50,
+          "debugging": 0,
+          "delivery": 0,
+          "task_context": 0
+        },
+        "assessed_at": "2026-10-31T13:21:13.689+00:00",
+        "latest_run": {
+          "id": 2,
+          "service_id": "notifications-service",
+          "assessment_id": 2,
+          "task_id": "NOTIF-877",
+          "title": "Stop webhook delivery after five attempts",
+          "status": "blocked",
+          "blocked_check": "catalog_entry",
+          "blocked_dimension": "discovery",
+          "steps": [
+            {
+              "name": "Find the service",
+              "dimension": "discovery",
+              "status": "blocked",
+              "detail": "Searched the catalog for \u201cwebhook\u201d and found no matching service.",
+              "output": null
+            }
+          ],
+          "duration_ms": 0,
+          "created_at": "2026-10-31T13:21:13.689+00:00"
+        },
+        "open_findings": 15,
+        "blockers": 1
+      },
+      {
+        "id": "identity-service",
+        "name": "identity-service",
+        "team": "team-identity",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/identity-service",
+        "kind": "sample",
+        "created_at": "2026-10-31T13:21:13.693+00:00",
+        "score": 96,
+        "baseline_score": 96,
+        "dimensions": {
+          "discovery": 100,
+          "code_understanding": 100,
+          "api_context": 100,
+          "build_environment": 100,
+          "testing": 100,
+          "debugging": 67,
+          "delivery": 100,
+          "task_context": 100
+        },
+        "assessed_at": "2026-10-31T13:21:13.730+00:00",
+        "latest_run": {
+          "id": 3,
+          "service_id": "identity-service",
+          "assessment_id": 3,
+          "task_id": "IDN-1520",
+          "title": "Make account lookup ignore email case and spaces",
+          "status": "completed",
+          "blocked_check": null,
+          "blocked_dimension": null,
+          "steps": [
+            {
+              "name": "Find the service",
+              "dimension": "discovery",
+              "status": "passed",
+              "detail": "Catalog entry catalog-info.yaml matches the ticket.",
+              "output": null
+            },
+            {
+              "name": "Locate the code",
+              "dimension": "code_understanding",
+              "status": "passed",
+              "detail": "Found src/identity/accounts.py.",
+              "output": null
+            },
+            {
+              "name": "Find the test command",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "AGENTS.md: python -m unittest discover -s tests",
+              "output": null
+            },
+            {
+              "name": "Prepare the environment",
+              "dimension": "build_environment",
+              "status": "passed",
+              "detail": "Clean environment plus 1 documented variable(s) from .env.example.",
+              "output": null
+            },
+            {
+              "name": "Apply the code change",
+              "dimension": "task_context",
+              "status": "passed",
+              "detail": "Applied the known correct change for IDN-1520.",
+              "output": null
+            },
+            {
+              "name": "Run the tests",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "python -m unittest discover -s tests exited 0.",
+              "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
+            }
+          ],
+          "duration_ms": 36,
+          "created_at": "2026-10-31T13:21:13.730+00:00"
+        },
+        "open_findings": 1,
+        "blockers": 0
+      }
+    ]
+  },
+  "final": {
+    "completion": {
+      "baseline": {
+        "completed": 1,
+        "total": 3
+      },
+      "latest": {
+        "completed": 3,
+        "total": 3
+      }
+    },
+    "unmeasured_services": 0,
+    "score": {
+      "baseline": 65,
+      "latest": 78
+    },
+    "time_to_identify_ms": 17,
+    "time_to_remediate_s": 0,
+    "findings": {
+      "open": 12,
+      "verified": 7,
+      "reopened": 1
+    },
+    "repeat_failures": {
+      "baseline": 2,
+      "latest": 0
+    },
+    "recurring": [
+      {
+        "dimension": "discovery",
+        "label": "Discovery",
+        "open_findings": 1,
+        "services_affected": 1,
+        "measured_blocks_baseline": 1,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 1
+      },
+      {
+        "dimension": "code_understanding",
+        "label": "Code understanding",
+        "open_findings": 3,
+        "services_affected": 2,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      },
+      {
+        "dimension": "api_context",
+        "label": "API context",
+        "open_findings": 0,
+        "services_affected": 0,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 1
+      },
+      {
+        "dimension": "build_environment",
+        "label": "Build environment",
+        "open_findings": 2,
+        "services_affected": 1,
+        "measured_blocks_baseline": 1,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 2
+      },
+      {
+        "dimension": "testing",
+        "label": "Testing",
+        "open_findings": 0,
+        "services_affected": 0,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      },
+      {
+        "dimension": "debugging",
+        "label": "Debugging and observability",
+        "open_findings": 3,
+        "services_affected": 2,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 1
+      },
+      {
+        "dimension": "delivery",
+        "label": "Delivery workflow",
+        "open_findings": 2,
+        "services_affected": 1,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      },
+      {
+        "dimension": "task_context",
+        "label": "Task context",
+        "open_findings": 1,
+        "services_affected": 1,
+        "measured_blocks_baseline": 0,
+        "measured_blocks_latest": 0,
+        "simulated_traces": 0
+      }
+    ],
+    "services": [
+      {
+        "id": "billing-service",
+        "name": "billing-service",
+        "team": "team-billing",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/billing-service",
+        "kind": "sample",
+        "created_at": "2026-10-31T13:21:13.647+00:00",
+        "score": 97,
+        "baseline_score": 88,
+        "dimensions": {
+          "discovery": 100,
+          "code_understanding": 75,
+          "api_context": 100,
+          "build_environment": 100,
+          "testing": 100,
+          "debugging": 100,
+          "delivery": 100,
+          "task_context": 100
+        },
+        "assessed_at": "2026-10-31T13:21:13.861+00:00",
+        "latest_run": {
+          "id": 6,
+          "service_id": "billing-service",
+          "assessment_id": 6,
+          "task_id": "BILL-2141",
+          "title": "Fix proration rounding: mid-cycle charges are a cent short",
+          "status": "completed",
+          "blocked_check": null,
+          "blocked_dimension": null,
+          "steps": [
+            {
+              "name": "Find the service",
+              "dimension": "discovery",
+              "status": "passed",
+              "detail": "Catalog entry catalog-info.yaml matches the ticket.",
+              "output": null
+            },
+            {
+              "name": "Locate the code",
+              "dimension": "code_understanding",
+              "status": "passed",
+              "detail": "Found src/billing/proration.py.",
+              "output": null
+            },
+            {
+              "name": "Find the test command",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "README.md: python -m unittest discover -s tests",
+              "output": null
+            },
+            {
+              "name": "Prepare the environment",
+              "dimension": "build_environment",
+              "status": "passed",
+              "detail": "Clean environment plus 1 documented variable(s) from .env.example.",
+              "output": null
+            },
+            {
+              "name": "Apply the code change",
+              "dimension": "task_context",
+              "status": "passed",
+              "detail": "Applied the known correct change for BILL-2141.",
+              "output": null
+            },
+            {
+              "name": "Run the tests",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "python -m unittest discover -s tests exited 0.",
+              "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
+            }
+          ],
+          "duration_ms": 35,
+          "created_at": "2026-10-31T13:21:13.862+00:00"
+        },
+        "open_findings": 1,
+        "blockers": 0
+      },
+      {
+        "id": "notifications-service",
+        "name": "notifications-service",
+        "team": "team-messaging",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/notifications-service",
+        "kind": "sample",
+        "created_at": "2026-10-31T13:21:13.688+00:00",
+        "score": 41,
+        "baseline_score": 12,
+        "dimensions": {
+          "discovery": 60,
+          "code_understanding": 25,
+          "api_context": 100,
+          "build_environment": 43,
+          "testing": 100,
+          "debugging": 0,
+          "delivery": 0,
+          "task_context": 0
+        },
+        "assessed_at": "2026-10-31T13:21:13.951+00:00",
+        "latest_run": {
+          "id": 9,
+          "service_id": "notifications-service",
+          "assessment_id": 9,
+          "task_id": "NOTIF-877",
+          "title": "Stop webhook delivery after five attempts",
+          "status": "completed",
+          "blocked_check": null,
+          "blocked_dimension": null,
+          "steps": [
+            {
+              "name": "Find the service",
+              "dimension": "discovery",
+              "status": "passed",
+              "detail": "Catalog entry catalog-info.yaml matches the ticket.",
+              "output": null
+            },
+            {
+              "name": "Locate the code",
+              "dimension": "code_understanding",
+              "status": "passed",
+              "detail": "Found src/notifications/webhooks.py.",
+              "output": null
+            },
+            {
+              "name": "Read the API contract",
+              "dimension": "api_context",
+              "status": "passed",
+              "detail": "Read openapi.yaml.",
+              "output": null
+            },
+            {
+              "name": "Find the test command",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "AGENTS.md: python -m unittest discover -s tests",
+              "output": null
+            },
+            {
+              "name": "Prepare the environment",
+              "dimension": "build_environment",
+              "status": "passed",
+              "detail": "Clean environment plus 0 documented variable(s) from .env.example.",
+              "output": null
+            },
+            {
+              "name": "Apply the code change",
+              "dimension": "task_context",
+              "status": "passed",
+              "detail": "Applied the known correct change for NOTIF-877.",
+              "output": null
+            },
+            {
+              "name": "Run the tests",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "python -m unittest discover -s tests exited 0.",
+              "output": "retry check 4\nretry check 5\n.\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+            }
+          ],
+          "duration_ms": 64,
+          "created_at": "2026-10-31T13:21:13.951+00:00"
+        },
+        "open_findings": 10,
+        "blockers": 0
+      },
+      {
+        "id": "identity-service",
+        "name": "identity-service",
+        "team": "team-identity",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-f8_graoc/workspaces/identity-service",
+        "kind": "sample",
+        "created_at": "2026-10-31T13:21:13.693+00:00",
+        "score": 96,
+        "baseline_score": 96,
+        "dimensions": {
+          "discovery": 100,
+          "code_understanding": 100,
+          "api_context": 100,
+          "build_environment": 100,
+          "testing": 100,
+          "debugging": 67,
+          "delivery": 100,
+          "task_context": 100
+        },
+        "assessed_at": "2026-10-31T13:21:13.730+00:00",
+        "latest_run": {
+          "id": 3,
+          "service_id": "identity-service",
+          "assessment_id": 3,
+          "task_id": "IDN-1520",
+          "title": "Make account lookup ignore email case and spaces",
+          "status": "completed",
+          "blocked_check": null,
+          "blocked_dimension": null,
+          "steps": [
+            {
+              "name": "Find the service",
+              "dimension": "discovery",
+              "status": "passed",
+              "detail": "Catalog entry catalog-info.yaml matches the ticket.",
+              "output": null
+            },
+            {
+              "name": "Locate the code",
+              "dimension": "code_understanding",
+              "status": "passed",
+              "detail": "Found src/identity/accounts.py.",
+              "output": null
+            },
+            {
+              "name": "Find the test command",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "AGENTS.md: python -m unittest discover -s tests",
+              "output": null
+            },
+            {
+              "name": "Prepare the environment",
+              "dimension": "build_environment",
+              "status": "passed",
+              "detail": "Clean environment plus 1 documented variable(s) from .env.example.",
+              "output": null
+            },
+            {
+              "name": "Apply the code change",
+              "dimension": "task_context",
+              "status": "passed",
+              "detail": "Applied the known correct change for IDN-1520.",
+              "output": null
+            },
+            {
+              "name": "Run the tests",
+              "dimension": "testing",
+              "status": "passed",
+              "detail": "python -m unittest discover -s tests exited 0.",
+              "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
+            }
+          ],
+          "duration_ms": 36,
+          "created_at": "2026-10-31T13:21:13.730+00:00"
+        },
+        "open_findings": 1,
+        "blockers": 0
+      }
+    ]
+  }
+}
