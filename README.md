@@ -79,4 +79,5 @@ blocked on it. Teams can submit a fix, but only a reassessment can verify one.
 - Registered repositories get static checks only. Their code is never executed, so their task outcome is "not measured".
 - Findings come only from static checks and probe runs. Traces link to existing findings and do not create new ones.
 - Checks use file conventions and suit Python and common layouts best.
-- The app has no authentication, so keep it bound to localhost.
+- The app has no authentication, so keep it bound to localhost. It rejects other hosts and cross-site writes.
+- Traces uploaded through the API are always stored as Simulated, because they cannot be verified.

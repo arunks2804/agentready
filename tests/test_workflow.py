@@ -1,22 +1,5 @@
-import os
-import tempfile
-
-_var = tempfile.mkdtemp(prefix="agentready-test-")
-os.environ["AGENTREADY_VAR"] = _var
-
-import pytest
-from fastapi.testclient import TestClient
-
 from app import store
-from app.main import app
 from app.traces import classify
-
-
-@pytest.fixture()
-def client():
-    with TestClient(app) as test_client:
-        test_client.post("/api/demo/reset")
-        yield test_client
 
 
 def detail(client, service):
@@ -101,7 +84,7 @@ def test_teams_cannot_mark_verified(client):
 
 def test_registered_repo_is_scanned_but_never_executed(client, tmp_path, monkeypatch):
     marker = tmp_path / "ran"
-    (tmp_path / "README.md").write_text(f"Run `python -m unittest` \n")
+    (tmp_path / "README.md").write_text("Run `python -m unittest` \n")
     (tmp_path / "test_x.py").write_text(f"open({str(marker)!r}, 'w')\n")
     monkeypatch.setattr("pathlib.Path.home", lambda: tmp_path.parent)
     response = client.post("/api/services", json={"name": "My Repo", "team": "t", "path": str(tmp_path)})
@@ -123,7 +106,7 @@ def test_fix_id_cannot_traverse(client):
 def test_simulated_traces_stay_out_of_measured_completion(client):
     baseline = client.get("/api/overview").json()["completion"]["latest"]
     response = client.post("/api/traces", json={
-        "external_id": "x1", "service": "billing-service", "agent": "a", "provenance": "simulated",
+        "external_id": "x1", "service": "billing-service", "agent": "a",
         "title": "t", "outcome": "completed", "events": [{"step": 1, "action": "a", "output": "ok"}],
     })
     assert response.status_code == 201
@@ -140,4 +123,4 @@ def test_reset_restores_baseline(client):
     fix_and_reassess(client, "billing-service", "3-env-working-config")
     client.post("/api/demo/reset")
     assert detail(client, "billing-service")["latest_run"]["status"] == "blocked"
-    assert store.WORKSPACES.is_relative_to(_var)
+    assert store.WORKSPACES.name == "workspaces" and "agentready-test-" in str(store.WORKSPACES)

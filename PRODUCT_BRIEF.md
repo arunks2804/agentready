@@ -2,7 +2,7 @@
 
 > **One-line proposition:** Identify what prevents AI coding agents from completing work on enterprise repositories and services, assign each gap to the team that owns it, and prove with a rerun whether the fix actually helped.
 
-> **Status:** Working prototype. Three fictional sample services run through the full loop in a FastAPI and SQLite application with a plain JavaScript dashboard, 14 automated tests and a reproducible recorded demo: assess → run the task → find the blocker → assign → fix → reassess. Task outcomes come from a deterministic scripted probe, which either stops at a missing prerequisite or runs the sample repository's tests. **No real AI agent has been run**, so the AI proposition below is still a hypothesis. Failed agent traces are simulated fixtures, labelled in the product and excluded from task completion.
+> **Status:** Working prototype. Three fictional sample services run through the full loop in a FastAPI and SQLite application with a plain JavaScript dashboard, 26 automated tests and a reproducible recorded demo: assess → run the task → find the blocker → assign → fix → reassess. Task outcomes come from a deterministic scripted probe, which either stops at a missing prerequisite or runs the sample repository's tests. **No real AI agent has been run**, so the AI proposition below is still a hypothesis. Failed agent traces are simulated fixtures, labelled in the product and excluded from task completion.
 
 **Contents:** [Overview](#1-product-overview) · [Demo](#product-demo) · [Problem](#2-the-problem) · [Users](#3-target-users) · [Value](#4-value-proposition) · [Capabilities](#5-product-capabilities) · [Scripts, AI and cost](#scripts-first-ai-where-it-is-needed) · [Architecture](#6-product-architecture) · [Workflows](#7-user-workflows) · [Metrics](#8-success-metrics) · [Decisions](#9-product-decisions-and-trade-offs) · [Scope & limitations](#10-prototype-scope-and-limitations) · [What comes next](#11-what-comes-next)
 
@@ -309,7 +309,7 @@ The full per-step evidence is in [docs/examples/SUMMARY.md](docs/examples/SUMMAR
 
 **Implemented and working:**
 - All seven MVP items: registration, eight-dimension assessment, trace analysis, evidence-backed findings, assignment, dashboard and reassessment.
-- 14 automated tests and a reproducible recorded demo.
+- 26 automated tests and a reproducible recorded demo.
 - Exported evidence in `docs/examples/`.
 
 **Simulated:**

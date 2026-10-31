@@ -8,8 +8,7 @@ import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import checks as checks_module
-from .checks import CHECK_INDEX, DIMENSIONS, run_checks, score
+from .checks import DIMENSIONS, run_checks, score
 from .probe import run_probe
 from .traces import classify
 
@@ -383,7 +382,6 @@ def overview():
         assessments = conn.execute("SELECT COUNT(*) FROM assessments").fetchone()[0]
         traces = list_traces(conn=conn)
 
-    labels = dict(DIMENSIONS)
     blocked_first = [r["blocked_dimension"] for r in first_runs if r["status"] != "completed"]
     blocked_last = [r["blocked_dimension"] for r in last_runs if r["status"] != "completed"]
     recurring = []

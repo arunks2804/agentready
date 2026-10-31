@@ -35,7 +35,7 @@ def row(step, data, check_id=None):
 
 def main():
     results = {"services": {}}
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://localhost", headers={"Content-Type": "application/json"}) as client:
         client.post("/api/demo/reset")
         results["baseline"] = client.get("/api/overview").json()
         for service in ("billing-service", "notifications-service", "identity-service"):

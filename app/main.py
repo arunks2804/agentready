@@ -2,16 +2,20 @@ import re
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from . import store
 from .checks import DIMENSIONS
 
 STATIC = Path(__file__).resolve().parent.parent / "static"
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
 
 @asynccontextmanager
@@ -21,6 +25,21 @@ async def lifespan(_app):
 
 
 app = FastAPI(title="AgentReady", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def reject_cross_site_writes(request: Request, call_next):
+    """A browser cannot send a JSON content type cross-site without a preflight, which this app never allows."""
+    if request.method not in SAFE_METHODS and request.url.path.startswith("/api/"):
+        origin = request.headers.get("origin")
+        if origin and urlsplit(origin).netloc != request.headers.get("host"):
+            return JSONResponse({"detail": "Cross-site requests are not allowed"}, status_code=403)
+        if request.headers.get("content-type", "").split(";")[0].strip() != "application/json":
+            return JSONResponse({"detail": "Requests must use application/json"}, status_code=415)
+    return await call_next(request)
+
+
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=ALLOWED_HOSTS)
 
 
 class ServiceIn(BaseModel):
@@ -41,10 +60,11 @@ class TraceEvent(BaseModel):
 
 
 class TraceIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     external_id: str = Field(min_length=1, max_length=120)
     service: str
     agent: str = Field(min_length=1, max_length=120)
-    provenance: Literal["simulated", "measured"]
     title: str = Field(min_length=1, max_length=200)
     outcome: Literal["failed", "completed"]
     events: list[TraceEvent] = Field(min_length=1, max_length=500)
@@ -80,7 +100,9 @@ def create_service(body: ServiceIn):
     if not path.is_relative_to(Path.home()):
         raise HTTPException(422, "Path must be inside your home directory")
     service_id = re.sub(r"[^a-z0-9-]+", "-", body.name.lower()).strip("-")
-    if not service_id or store.service_detail(service_id):
+    if not service_id:
+        raise HTTPException(422, "Service name needs at least one letter or number")
+    if store.service_detail(service_id):
         raise HTTPException(409, "A service with that name already exists")
     store.register_service(service_id, body.name, body.team, path, "registered")
     return store.service_detail(service_id)
@@ -118,7 +140,7 @@ def transition(finding_id: int, body: TransitionIn):
     try:
         result = store.transition_finding(finding_id, body.action, body.team)
     except ValueError as error:
-        raise HTTPException(409, str(error))
+        raise HTTPException(409, str(error)) from error
     if result is None:
         raise HTTPException(404, "Finding not found")
     return {"ok": True}
@@ -132,7 +154,8 @@ def get_traces():
 @app.post("/api/traces", status_code=201)
 def post_trace(body: TraceIn):
     _require_service(body.service)
-    return store.ingest_trace(body.model_dump())
+    # Uploads cannot be verified, so a client never gets to call its own trace Measured.
+    return store.ingest_trace({**body.model_dump(), "provenance": "simulated"})
 
 
 @app.post("/api/demo/reset")
