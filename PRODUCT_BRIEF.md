@@ -48,10 +48,10 @@ The demo is written so that someone outside the field, a senior executive for ex
 |---|---|
 | Opening | Why skilled coding agents still get stuck; the five steps; how the demo works: no AI runs, and a script stands in for a coding agent using a prepared code change |
 | 1 · Where we start | **1 of 3 tickets complete**, and billing-service is blocked with a score of 88 |
-| 2 · What blocked the ticket | BILL-2141: the unit tests fail on the undocumented `BILLING_TAX_TABLE_PATH` environment variable. AgentReady shows the evidence and one recommended fix |
+| 2 · What blocked the work | BILL-2141, a bug ticket: the unit tests fail on the undocumented `BILLING_TAX_TABLE_PATH` environment variable. AgentReady shows the evidence and one recommended fix |
 | 3 · The team fixes it | team-billing applies the recommended fix, the ticket is rerun, and it completes |
 | 4 · A view for each team | Remediation queues and recurring blockers |
-| 5 · A ticket with three blockers | NOTIF-877: the service catalog entry, API contract and test command, one layer at a time. It completes at a score of 41 |
+| 5 · One service, three blockers | NOTIF-877: the service catalog entry, API contract and test command, one layer at a time. It completes at a score of 41 |
 | 6 · Scripts first, AI where it counts | What scripts handle, what a real coding agent would do, and why the cost saving is not measured yet |
 | Summary | Tickets completed before and after, read from the live run |
 
@@ -161,6 +161,8 @@ Three sample services are loaded on first run. A local repository can be registe
 The prototype applies 17 weighted checks that read files on disk. Each dimension is scored as the weighted share of passing checks, and the overall score is the mean of the eight.
 
 ### Capability 3 — Measured task runs
+A **ticket** is a piece of work tracked in a tool such as Jira: a story, bug or enhancement. An epic is usually too large, so it would first be split into stories. A real coding agent reads a ticket and writes the code change. In this prototype, each ticket is a small sample file, not a real Jira issue.
+
 A scripted probe walks the path an agent would take: find the service, locate the code, read the API contract when the ticket needs it, find the test command, prepare a clean environment using only documented settings, apply the known correct change, and run the tests. It stops at the first gap. Runs use a throwaway copy with a 30-second limit.
 
 The probe stops in two ways, and they are different kinds of evidence. A **test failure** comes from really running the tests, as with billing-service. A **rule-based stop** means the script found a prerequisite missing and stopped before any test ran, as with all three notifications-service blocks. A rule-based stop shows the script's assumption, not that a real agent would be stopped.

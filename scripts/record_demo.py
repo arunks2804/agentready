@@ -56,9 +56,9 @@ OVERLAY_JS = r"""
   #demo-slide li { font-size: 29px; color: #e2e8f0; line-height: 1.35; padding-left: 46px; position: relative; }
   #demo-slide li::before { content: ''; position: absolute; left: 0; top: 13px; width: 18px; height: 18px; border-radius: 5px; background: #3987e5; }
   #demo-slide li b { color: #fff; }
-  #demo-slide .loop { display: flex; gap: 14px; margin-top: 40px; align-items: center; flex-wrap: wrap; }
-  #demo-slide .loop span.step { background: rgba(57,135,229,.18); border: 1px solid rgba(141,189,243,.5); color: #e3effc; padding: 16px 24px;
-    border-radius: 14px; font-size: 28px; font-weight: 650; }
+  #demo-slide .loop { display: flex; gap: 10px; margin-top: 40px; align-items: center; flex-wrap: nowrap; white-space: nowrap; }
+  #demo-slide .loop span.step { background: rgba(57,135,229,.18); border: 1px solid rgba(141,189,243,.5); color: #e3effc; padding: 14px 18px;
+    border-radius: 14px; font-size: 26px; font-weight: 650; }
   #demo-slide .loop span.arrow { color: #3987e5; font-size: 30px; }
   #demo-slide .note { margin-top: 44px; font-size: 26px; color: #fcd34d; border-left: 4px solid #f59e0b; padding-left: 18px; line-height: 1.4; }
   #demo-slide .chapter-num { font-size: 150px; font-weight: 800; color: #3987e5; line-height: 1; margin-bottom: 10px; }
@@ -344,33 +344,34 @@ def run(args) -> Path | None:
 
         # ================================================================== opening
         d.slide('<div class="kicker">Product demo</div><h1>AgentReady</h1>'
-                '<p class="lead">Can an AI coding agent complete a ticket here? Find what stops it, get it fixed, and prove the fix worked.</p>')
-        with Scene(d, "This is AgentReady. It finds what stops an AI coding agent from completing a ticket, assigns the readiness gap to the team that owns the service, "
-                      "and reruns the ticket to prove the fix worked.", pad=0.6):
+                '<p class="lead">Can an AI coding agent complete its work here? Find what stops it, get it fixed, and prove the fix worked.</p>')
+        with Scene(d, "This is AgentReady. It finds what stops an AI coding agent from completing its work, assigns the readiness gap to the team that owns the service, "
+                      "and reruns the work to prove the fix worked.", pad=0.6):
             pass
         d.slide('<div class="kicker">Why it matters</div><h2>Skilled coding agents still get stuck</h2>'
-                '<ul><li>Companies now assign <b>engineering tickets</b> to AI coding agents</li>'
+                '<ul><li>Companies now give <b>engineering work</b> to AI coding agents</li>'
                 '<li>Think of a skilled new starter with <b>no building pass and no instructions</b></li>'
                 '<li>If they get stuck, the fault <b>may not be theirs</b></li></ul>')
-        with Scene(d, "Companies now assign engineering tickets to AI coding agents. But think of a skilled new starter with no building pass and no instructions. "
+        with Scene(d, "Companies now give engineering work to AI coding agents. But think of a skilled new starter with no building pass and no instructions. "
                       "If they get stuck, the fault may not be theirs. Coding agents get stuck for the same reason.", pad=0.5):
             pass
         d.slide('<div class="kicker">How it works</div><h2>Five steps</h2>'
-                '<div class="loop"><span class="step">Run the ticket</span><span class="arrow">→</span><span class="step">Find what blocked it</span>'
-                '<span class="arrow">→</span><span class="step">Assign the owning team</span><span class="arrow">→</span><span class="step">Team fixes it</span>'
-                '<span class="arrow">→</span><span class="step">Rerun the ticket</span></div>')
-        with Scene(d, "It works in five steps. Run the ticket. Find what blocked it. Assign it to the owning team. The team fixes it. Rerun the ticket.", pad=0.5):
+                '<div class="loop"><span class="step">Run the work</span><span class="arrow">→</span><span class="step">Find what blocked it</span>'
+                '<span class="arrow">→</span><span class="step">Assign the team</span><span class="arrow">→</span><span class="step">Team fixes it</span>'
+                '<span class="arrow">→</span><span class="step">Rerun the work</span></div>')
+        with Scene(d, "It works in five steps. Run the work. Find what blocked it. Assign it to the owning team. The team fixes it. Rerun the work.", pad=0.5):
             pass
         d.slide('<div class="kicker">Before we start</div><h2>How this demo works</h2>'
                 '<ul><li><b>No AI runs</b> in this demo, and no coding agent is called</li>'
                 '<li>A <b>script stands in</b> for a coding agent</li>'
-                '<li>A real coding agent would write the code change. The script copies in a <b>prepared code change</b></li>'
+                '<li>A <b>ticket</b> is a Jira story, bug or enhancement. A real coding agent would read it and write the code change</li>'
+                '<li>The script copies in a <b>prepared code change</b></li>'
                 '<li>The <b>unit tests are real</b>, and so are their results</li>'
                 '<li>The services are <b>sample code</b>, and a button stands in for the team\'s fix</li></ul>'
                 '<div class="note">This shows how the method works. It does not show how much real coding agents improve.</div>')
         with Scene(d, "Before we start, here is how this demo works. No AI runs in it, and no coding agent is called. A script stands in for a coding agent.", pad=0.3):
             pass
-        with Scene(d, "A real coding agent would read the ticket and write the code change. A script can't do that, so it copies in a code change prepared in advance. "
+        with Scene(d, "A ticket is a Jira story, bug or enhancement. A real coding agent would read the ticket and write the code change. A script can't do that, so it copies in a code change prepared in advance. "
                       "It then runs the real unit tests, and those test results are real.", pad=0.3):
             pass
         with Scene(d, "The three services are sample code, with problems added on purpose. A button stands in for the team's fix. "
@@ -383,18 +384,19 @@ def run(args) -> Path | None:
         base = d.overview()
         expect(base["done"] == 1 and base["total"] == 3, "baseline should be 1 of 3")
         d.zoom(page.locator(".hero .card").first, 1.3)
-        with Scene(d, f"We have three sample services, and each has one ticket. Right now, {words(base['done'])} of the {words(base['total'])} tickets completes."):
+        with Scene(d, f"We have three sample services, and each has one ticket. Right now, only {words(base['done'])} of the {words(base['total'])} is completed."):
             pass
         billing_score = int(page.locator("section.card").first.locator("tbody tr").nth(0).locator("td").nth(4).inner_text())
         d.zoom(page.locator("section.card tbody tr").first, 1.35)
-        with Scene(d, f"Billing service is blocked, even with a readiness score of {billing_score} out of 100. Let's find out what blocked it."):
+        with Scene(d, f"Billing service is blocked, even with a readiness score of {billing_score} out of 100. Let's find out why."):
             pass
 
         # ================================================================== 2. what blocked the ticket
-        d.chapter(2, "What blocked the ticket", "One undocumented environment variable")
+        d.chapter(2, "What blocked the work", "One undocumented environment variable")
         d.go("#/service/billing-service", "billing-service")
         d.zoom(page.locator(".card", has_text="Latest task").locator("p.muted").first, 1.6)
-        with Scene(d, "This is ticket BILL-2141, a proration rounding defect. The code uses int, and it should use round."):
+        with Scene(d, "This is BILL-2141, a bug ticket. Billing service works out what to charge a customer who uses only part of a billing period. That amount often has decimals. "
+                      "The code should round it to the nearest whole number, but it just cuts the decimals off, so the charge comes out slightly too low."):
             pass
         d.zoom(".steps", 1.15)
         with Scene(d, "The script stands in for a coding agent and follows the same steps. It finds the service, locates the code, and finds the test command. "
@@ -415,11 +417,11 @@ def run(args) -> Path | None:
         d.fix_panel(fix)
         with Scene(d, "team-billing applies the recommended fix. In this demo, a button stands in for that commit."):
             d.fix_and_reassess_apply(fix)
-        with Scene(d, "Now AgentReady reruns the ticket."):
+        with Scene(d, "Now AgentReady reruns the work."):
             d.reassess()
         expect(d.task() == "Completed", "the recommended fix should complete the task")
         d.zoom(page.locator(".card", has_text="Latest task").first, 1.05)
-        with Scene(d, "The unit tests now pass, and the ticket completes. The blocker is verified because the rerun proved it, not because someone said so."):
+        with Scene(d, "The unit tests now pass, and the work completes. The blocker is verified because the rerun proved it, not because someone said so."):
             pass
 
         # ================================================================== 4. a view for each team
@@ -434,11 +436,11 @@ def run(args) -> Path | None:
             pass
 
         # ================================================================== 5. three blockers
-        d.chapter(5, "A ticket with three blockers", "One layer at a time")
+        d.chapter(5, "One service, three blockers", "One layer at a time")
         d.go("#/", "Can agents finish work")
         d.go("#/service/notifications-service", "notifications-service")
         d.zoom(page.locator(".card", has_text="Latest task").locator("p.muted").first, 1.6)
-        with Scene(d, "This is ticket NOTIF-877 on notifications-service: stop webhook delivery after five attempts. The code keeps retrying forever, and it should stop at five."):
+        with Scene(d, "This is NOTIF-877, on notifications-service. It asks for webhook delivery to stop after five attempts. The code keeps retrying forever, and it should stop at five."):
             pass
         d.zoom(".steps li.blocked", 1.35)
         with Scene(d, "The script stands in for a coding agent and starts with the first step: find the service. It searches the service catalog for webhook. "
@@ -448,18 +450,18 @@ def run(args) -> Path | None:
         with Scene(d, "AgentReady records this as a blocker, and recommends adding the service to the catalog. It assigns the blocker to team-messaging."):
             pass
         d.fix_panel("1-catalog-entry")
-        with Scene(d, "team-messaging adds a catalog entry. A button stands in for that commit. AgentReady then reruns the ticket."):
+        with Scene(d, "team-messaging adds a catalog entry. A button stands in for that commit. AgentReady then reruns the work."):
             page.wait_for_timeout(2600)
             d.fix_and_reassess("1-catalog-entry")
         d.zoom(".steps", 1.3)
         with Scene(d, "Standing in for the coding agent again, the script now finds the service and locates the code. "
-                      "Next, it looks for the API contract, because this ticket changes how the webhook API behaves. There is no contract, so it stops here."):
+                      "Next, it looks for the API contract, because this change affects how the webhook API behaves. There is no contract, so it stops here."):
             pass
         d.zoom("#stop-kind", 2.0)
-        with Scene(d, "This is a rule-based stop. The script stopped before running any tests, because its rule requires a contract for this ticket."):
+        with Scene(d, "This is a rule-based stop. The script stopped before running any tests, because its rule requires a contract for this kind of change."):
             pass
         d.zoom(d.finding("API contract is published"), 1.2)
-        with Scene(d, "AgentReady records the blocker, and recommends publishing the API contract. team-messaging publishes it, and AgentReady reruns the ticket."):
+        with Scene(d, "AgentReady records the blocker, and recommends publishing the API contract. team-messaging publishes it, and AgentReady reruns the work."):
             page.wait_for_timeout(4200)
             d.fix_panel("2-openapi")
             d.fix_and_reassess("2-openapi")
@@ -468,7 +470,7 @@ def run(args) -> Path | None:
                       "Next, it looks for the command that runs the unit tests. Nothing documents it, so it stops here. This is also a rule-based stop."):
             pass
         d.zoom(d.finding("Test command is documented"), 1.2)
-        with Scene(d, "AgentReady records the blocker, and recommends documenting the test command. team-messaging adds it, and AgentReady reruns the ticket."):
+        with Scene(d, "AgentReady records the blocker, and recommends documenting the test command. team-messaging adds it, and AgentReady reruns the work."):
             page.wait_for_timeout(4200)
             d.fix_panel("3-test-command")
             d.fix_and_reassess("3-test-command")
@@ -476,11 +478,11 @@ def run(args) -> Path | None:
         expect(d.task() == "Completed", "notifications should complete")
         d.zoom(".steps", 1.15)
         with Scene(d, "Now the script gets through every step. It copies in the prepared code change, which stops retries at five attempts. "
-                      "It then runs the real unit tests, and they pass. The ticket completes."):
+                      "It then runs the real unit tests, and they pass. The work completes."):
             pass
         d.zoom(".page-head", 1.5)
         with Scene(d, f"Notifications service completed with a readiness score of only {low}. Billing service was blocked at {billing_score}. "
-                      "So a score alone can't show whether a ticket will complete. Only running it can."):
+                      "So a score alone can't show whether the work will complete. Only running it can."):
             pass
 
         # ================================================================== 6. scripts and AI
@@ -501,7 +503,7 @@ def run(args) -> Path | None:
                       "The owning team would fix the gap, and the coding agent would rerun the same ticket. These AI roles are planned, and not built yet."):
             pass
         d.zoom("#cost-note", 1.25)
-        with Scene(d, "This keeps cost down. Scripts check every change, and coding agents run only on a sample of tickets. The saving hasn't been measured yet, because no real coding agent has been run."):
+        with Scene(d, "This keeps cost down. Scripts check every change, and coding agents run only on a sample of the work. The saving hasn't been measured yet, because no real coding agent has been run."):
             pass
         d.unzoom()
         d.chip(None)
@@ -510,12 +512,12 @@ def run(args) -> Path | None:
         expect(final["done"] == 3, "all three tasks should complete")
 
         # ================================================================== close
-        d.slide('<div class="kicker">In summary</div><h2>Find what blocks the ticket, fix it, and prove it</h2>'
+        d.slide('<div class="kicker">In summary</div><h2>Find what blocks the work, fix it, and prove it</h2>'
                 '<table class="tbl"><tr><th></th><th>Start</th><th>After the fixes</th></tr>'
                 f'<tr><td>Tickets completed</td><td>{base["done"]} of {base["total"]}</td><td><b>{final["done"]} of {final["total"]}</b></td></tr></table>'
                 '<div class="note">Sample services and a script, not a real coding agent. Testing with a real coding agent is the next step. '
                 'Voiceover is AI-generated (Piper, en-GB). All app footage is a live recording.</div>')
-        with Scene(d, f"In summary: completed tickets went from {words(base['done'])} of {words(base['total'])} to {words(final['done'])} of {words(final['total'])} on these sample services. "
+        with Scene(d, f"In summary: {words(base['done'])} of the {words(base['total'])} tickets was completed at the start, and all {words(final['done'])} at the end, on these sample services. "
                       "The next step is to test this with a real coding agent on real repositories. "
                       "AgentReady: don't just ask whether the AI is ready for the work. Ask whether the work is ready for the AI.", pad=1.2):
             pass

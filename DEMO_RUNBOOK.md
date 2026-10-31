@@ -26,9 +26,12 @@ This explains exactly what happens in the AgentReady demo: what is real, what is
 
 ## 2. Who does what
 
+A **ticket** is a piece of work tracked in a tool such as Jira: a story, bug or enhancement. An epic is usually too large, so it would first be split into stories. A real coding agent reads a ticket and writes the code change.
+
 | Name | What it is | In this demo |
 |---|---|---|
-| **Coding agent** | An AI tool that works on tickets and changes code | **Not used** |
+| **Ticket** | A Jira story, bug or enhancement. A real coding agent would read it | **Sample file.** Each one is a small file in `samples/tasks/`, not a real Jira issue |
+| **Coding agent** | An AI tool that reads tickets and writes code changes | **Not used** |
 | **Script** (the scripted probe, `app/probe.py`) | A fixed list of steps | **Real.** It stands in for the coding agent |
 | **Readiness checks** (`app/checks.py`) | 17 checks that read repository files | **Real** |
 | **Sample services** | Three small services I wrote | **Real code, but made up.** Two have problems added on purpose |
@@ -41,7 +44,7 @@ This explains exactly what happens in the AgentReady demo: what is real, what is
 
 ## 3. What happens, step by step
 
-The example is `billing-service` and ticket **BILL-2141: Fix proration rounding**.
+The example is `billing-service` and ticket **BILL-2141: Fix proration rounding**, which is a bug ticket.
 
 **The defect:** `src/billing/proration.py` uses `int()`, which truncates the result. It should use `round()`.
 
@@ -246,19 +249,19 @@ python3 -m uvicorn app.main:app --port 8010
 
 ## 8. The recorded video
 
-Video: https://arunks2804.github.io/agentready/ (7:53, with full captions)
+Video: https://arunks2804.github.io/agentready/ (8:17, with full captions)
 
 | Time | Part | What it covers |
 |---|---|---|
-| 0:02 | Opening | The problem, the five steps, and how the demo works |
-| 0:43 | How this demo works | No AI runs. The script stands in for a coding agent, using a prepared code change |
-| 1:22 | 1 · Where we start | One of three tickets completes |
-| 1:45 | 2 · What blocked the ticket | BILL-2141, the undocumented environment variable and the recommended fix |
-| 2:52 | 3 · The team fixes it | The recommended fix is applied, and the rerun completes |
-| 3:16 | 4 · A view for each team | Remediation queues and recurring blockers |
-| 3:43 | 5 · A ticket with three blockers | NOTIF-877, one layer at a time |
-| 6:21 | 6 · Scripts first, AI where it counts | Scripts, what a real coding agent would do, and cost |
-| 7:38 | Summary | Before and after, and the next step |
+| 0:02 | Opening | The problem and the five steps |
+| 0:42 | How this demo works | No AI runs. A ticket is a Jira story, bug or enhancement. The script stands in for a coding agent, using a prepared code change |
+| 1:25 | 1 · Where we start | One of three tickets is completed |
+| 1:47 | 2 · What blocked the work | BILL-2141, the undocumented environment variable and the recommended fix |
+| 3:13 | 3 · The team fixes it | The recommended fix is applied, and the rerun completes |
+| 3:39 | 4 · A view for each team | Remediation queues and recurring blockers |
+| 4:05 | 5 · One service, three blockers | NOTIF-877, one layer at a time |
+| 6:43 | 6 · Scripts first, AI where it counts | Scripts, what a real coding agent would do, and cost |
+| 7:59 | Summary | Before and after, and the next step |
 
 Captions show the exact technical names, such as `BILLING_TAX_TABLE_PATH`. The voice says them as separate words so they can be pronounced.
 
