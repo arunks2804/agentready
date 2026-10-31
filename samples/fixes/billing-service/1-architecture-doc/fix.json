@@ -1,1 +1,1 @@
-{"title": "Add architecture overview", "check_id": "architecture_doc", "note": "Lifts the score. Does nothing for the failing task.", "order": 1}
+{"title": "Add architecture overview", "check_id": "architecture_doc", "note": "A useful document, but it does not unblock the task.", "order": 1, "recommended": false}

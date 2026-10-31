@@ -1,1 +1,1 @@
-{"title": "Ship a working sample config", "check_id": "env_vars_documented", "note": "Adds a real sample tax table and points the variable at it.", "order": 3}
+{"title": "Add a working sample settings file", "check_id": "env_vars_documented", "note": "Recommended fix. Adds a sample tax rate file and says where to find it.", "order": 3, "recommended": true}

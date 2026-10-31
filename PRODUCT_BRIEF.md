@@ -40,21 +40,22 @@ Each step produces the input the next one needs. The objective is not to raise a
 
 [![AgentReady product demo — click to play the narrated walkthrough](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated demo (6 min, 1920×1080, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4)
+**▶ [Watch the narrated demo (5½ min, 1920×1080, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4)
 
-The demo is written so that someone outside the field, a senior executive for example, can follow it without prior knowledge. Plain-English slides come first. Each chapter then shows the real application with a visible pointer and zoom-ins on the evidence. All application footage is a live Playwright recording, and every number spoken or captioned is read from the page while it records. The British voiceover is AI-generated with Piper, which runs locally.
+The demo is written so that someone outside the field, a senior executive for example, can follow it without prior knowledge. Plain-English slides come first. Each chapter then shows the real application with a visible pointer and zoom-ins on the evidence. All application footage is a live Playwright recording, and every number spoken or captioned is read from the page while it records. The full voiceover appears as captions. The British voiceover is AI-generated with Piper, which runs locally.
 
 | Part | What it explains and shows |
 |---|---|
-| Opening | Why capable agents still fail; the new-starter comparison; how AgentReady works in six steps; the disclosure of what is simulated |
-| 1 · Where we start | The live overview: **1 of 3 tasks complete**, and three services with very different scores |
-| 2 · Finding the real blocker | billing-service scores 88, yet its task stops at one undocumented setting. The evidence and owning team are shown |
-| 3 · A higher score is not proof | Two fixes raise the score to 97. The task stays blocked and the finding reopens |
-| 4 · The fix that works | A working sample config. The score does not move, and the task completes |
-| 5 · A view for each team | The team queue, recurring blockers, the readiness heatmap, and simulated traces kept separate |
-| 6 · Blockers in layers | notifications-service: each fix reveals the next blocker, and the task completes at a score of 41 |
-| 7 · Scripts first, AI where it counts | What scripts handle, what needs an AI agent, how that lowers cost, and why the saving is not measured yet |
-| Summary | Before and after, read from the live run |
+| Opening | Why skilled assistants still get stuck; the new-starter comparison; the five steps; what is simulated |
+| 1 · Where we start | **1 of 3 tasks finish**, and billing-service is blocked with a score of 88 |
+| 2 · What stopped the task | A missing tax rate file stops the tests. AgentReady shows the evidence and one recommended fix |
+| 3 · The team fixes it | The team applies the recommended fix, the same task is tried again, and it finishes |
+| 4 · A view for each team | Each team's work list, and the problems that come up most |
+| 5 · A service with three blockers | notifications-service is fixed one blocker at a time and finishes at a score of 41 |
+| 6 · Scripts first, AI where it counts | What scripts handle, what needs AI, and why the cost saving is not measured yet |
+| Summary | Tasks finished before and after, read from the live run |
+
+The demo shows the direct path only. The app can also show that a rising score is not proof and that an incomplete fix gets caught on retry: open **Other changes to try** on billing-service. Those results are in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
 
 Re-record it yourself: `python scripts/record_demo.py` (needs `requirements-demo.txt`, a Piper voice and ffmpeg; see the README).
 

@@ -8,7 +8,7 @@ supporting signal, and a higher score alone proves nothing.
 
 [![AgentReady demo — click to play](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated product demo (6 min, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). It is written for a non-technical audience. Plain-English slides explain the problem and what is simulated, then each step is shown live in the app. Every number spoken is read from the page while it records. The British voiceover is AI-generated (Piper, run locally).
+**▶ [Watch the narrated product demo (5½ min, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). It is written for a non-technical audience. Plain-English slides explain the problem and what is simulated, then each step is shown live in the app with full captions. Every number spoken is read from the page while it records. The British voiceover is AI-generated (Piper, run locally).
 
 📄 **Start here: [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md)** covers the problem, the users, the product, the decisions and the scope. Evidence from a full run is in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
 
@@ -23,13 +23,13 @@ Open http://127.0.0.1:8010. Tests: `python3 -m pytest`.
 
 ## Demo path
 
-1. **Overview:** 1 of 3 tasks completes at baseline.
-2. **billing-service:** the task is blocked because the tests need an undocumented config value.
-3. Apply *Add architecture overview*, then reassess. The score rises and the task stays blocked.
-4. Apply *Document the variable name only*, then reassess. The static check passes, yet the finding reopens because the task still fails.
-5. Apply *Ship a working sample config*, then reassess. The task completes and the finding is verified.
-6. **notifications-service:** three stacked blockers appear one at a time as each is fixed.
-7. **Reset demo** returns to baseline.
+1. **Overview:** 1 of 3 tasks finish at baseline.
+2. **billing-service:** the task is blocked because the tests need a tax rate file that nothing points to.
+3. Apply the recommended fix, *Add a working sample settings file*, then click **Reassess now**. The task finishes and the finding is verified.
+4. **notifications-service:** three blockers appear one at a time as each recommended fix is applied.
+5. **Reset demo** returns to baseline.
+
+To see that a score is not proof, reset the demo and open **Other changes to try** on billing-service. *Add architecture overview* raises the score and the task stays blocked. *Name the setting only* passes the static check, yet the finding reopens because the task still fails.
 
 ## What is real and what is simulated
 

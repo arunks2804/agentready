@@ -18,7 +18,7 @@
         "finding_status": "verified"
       },
       {
-        "step": "Document the variable name only",
+        "step": "Name the setting only",
         "score": 97,
         "task": "blocked",
         "blocked_at": "build_environment",
@@ -26,7 +26,7 @@
         "finding_status": "reopened"
       },
       {
-        "step": "Ship a working sample config",
+        "step": "Add a working sample settings file",
         "score": 97,
         "task": "completed",
         "blocked_at": null,
@@ -44,7 +44,7 @@
         "finding_status": null
       },
       {
-        "step": "Register in the service catalog",
+        "step": "Add the service to the catalog",
         "score": 19,
         "task": "blocked",
         "blocked_at": "api_context",
@@ -95,7 +95,7 @@
       "baseline": 65,
       "latest": 65
     },
-    "time_to_identify_ms": 17,
+    "time_to_identify_ms": 16,
     "time_to_remediate_s": null,
     "findings": {
       "open": 19,
@@ -189,9 +189,9 @@
         "id": "billing-service",
         "name": "billing-service",
         "team": "team-billing",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/billing-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-cmt3nc2p/workspaces/billing-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:49:29.925+00:00",
+        "created_at": "2026-10-31T15:44:01.857+00:00",
         "score": 88,
         "baseline_score": 88,
         "dimensions": {
@@ -204,7 +204,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:49:29.960+00:00",
+        "assessed_at": "2026-10-31T15:44:01.891+00:00",
         "latest_run": {
           "id": 1,
           "service_id": "billing-service",
@@ -255,11 +255,11 @@
               "dimension": "build_environment",
               "status": "blocked",
               "detail": "python -m unittest discover -s tests exited 1.",
-              "output": "E.\n======================================================================\nERROR: test_prorated_total_includes_tax (test_proration.ProrationTest.test_prorated_total_includes_tax)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-1_p1xanm/repo/tests/test_proration.py\", line 16, in test_prorated_total_includes_tax\n    self.assertEqual(with_tax(prorate(1000, 2, 3), \"CA\"), 717)\n                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-1_p1xanm/repo/tests/../src/billing/tax.py\", line 11, in with_tax\n    return round(amount_cents * (1 + rate_for(region)))\n                                     ~~~~~~~~^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-1_p1xanm/repo/tests/../src/billing/tax.py\", line 6, in rate_for\n    with open(os.environ[\"BILLING_TAX_TABLE_PATH\"], encoding=\"utf-8\") as f:\n              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 717, in __getitem__\nKeyError: 'BILLING_TAX_TABLE_PATH'\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nFAILED (errors=1)\n"
+              "output": "E.\n======================================================================\nERROR: test_prorated_total_includes_tax (test_proration.ProrationTest.test_prorated_total_includes_tax)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-i50e20hc/repo/tests/test_proration.py\", line 16, in test_prorated_total_includes_tax\n    self.assertEqual(with_tax(prorate(1000, 2, 3), \"CA\"), 717)\n                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-i50e20hc/repo/tests/../src/billing/tax.py\", line 11, in with_tax\n    return round(amount_cents * (1 + rate_for(region)))\n                                     ~~~~~~~~^^^^^^^^\n  File \"/private/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-probe-i50e20hc/repo/tests/../src/billing/tax.py\", line 6, in rate_for\n    with open(os.environ[\"BILLING_TAX_TABLE_PATH\"], encoding=\"utf-8\") as f:\n              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 717, in __getitem__\nKeyError: 'BILLING_TAX_TABLE_PATH'\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nFAILED (errors=1)\n"
             }
           ],
-          "duration_ms": 34,
-          "created_at": "2026-10-31T13:49:29.960+00:00"
+          "duration_ms": 32,
+          "created_at": "2026-10-31T15:44:01.891+00:00"
         },
         "open_findings": 3,
         "blockers": 1
@@ -268,9 +268,9 @@
         "id": "notifications-service",
         "name": "notifications-service",
         "team": "team-messaging",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/notifications-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-cmt3nc2p/workspaces/notifications-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:49:29.962+00:00",
+        "created_at": "2026-10-31T15:44:01.893+00:00",
         "score": 12,
         "baseline_score": 12,
         "dimensions": {
@@ -283,7 +283,7 @@
           "delivery": 0,
           "task_context": 0
         },
-        "assessed_at": "2026-10-31T13:49:29.963+00:00",
+        "assessed_at": "2026-10-31T15:44:01.894+00:00",
         "latest_run": {
           "id": 2,
           "service_id": "notifications-service",
@@ -303,7 +303,7 @@
             }
           ],
           "duration_ms": 0,
-          "created_at": "2026-10-31T13:49:29.963+00:00"
+          "created_at": "2026-10-31T15:44:01.894+00:00"
         },
         "open_findings": 15,
         "blockers": 1
@@ -312,9 +312,9 @@
         "id": "identity-service",
         "name": "identity-service",
         "team": "team-identity",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/identity-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-cmt3nc2p/workspaces/identity-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:49:29.967+00:00",
+        "created_at": "2026-10-31T15:44:01.897+00:00",
         "score": 96,
         "baseline_score": 96,
         "dimensions": {
@@ -327,7 +327,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:49:30.001+00:00",
+        "assessed_at": "2026-10-31T15:44:01.930+00:00",
         "latest_run": {
           "id": 3,
           "service_id": "identity-service",
@@ -382,7 +382,7 @@
             }
           ],
           "duration_ms": 32,
-          "created_at": "2026-10-31T13:49:30.001+00:00"
+          "created_at": "2026-10-31T15:44:01.931+00:00"
         },
         "open_findings": 1,
         "blockers": 0
@@ -405,7 +405,7 @@
       "baseline": 65,
       "latest": 78
     },
-    "time_to_identify_ms": 17,
+    "time_to_identify_ms": 16,
     "time_to_remediate_s": 0,
     "findings": {
       "open": 12,
@@ -499,9 +499,9 @@
         "id": "billing-service",
         "name": "billing-service",
         "team": "team-billing",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/billing-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-cmt3nc2p/workspaces/billing-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:49:29.925+00:00",
+        "created_at": "2026-10-31T15:44:01.857+00:00",
         "score": 97,
         "baseline_score": 88,
         "dimensions": {
@@ -514,7 +514,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:49:30.131+00:00",
+        "assessed_at": "2026-10-31T15:44:02.062+00:00",
         "latest_run": {
           "id": 6,
           "service_id": "billing-service",
@@ -568,8 +568,8 @@
               "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
             }
           ],
-          "duration_ms": 34,
-          "created_at": "2026-10-31T13:49:30.131+00:00"
+          "duration_ms": 33,
+          "created_at": "2026-10-31T15:44:02.062+00:00"
         },
         "open_findings": 1,
         "blockers": 0
@@ -578,9 +578,9 @@
         "id": "notifications-service",
         "name": "notifications-service",
         "team": "team-messaging",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/notifications-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-cmt3nc2p/workspaces/notifications-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:49:29.962+00:00",
+        "created_at": "2026-10-31T15:44:01.893+00:00",
         "score": 41,
         "baseline_score": 12,
         "dimensions": {
@@ -593,7 +593,7 @@
           "delivery": 0,
           "task_context": 0
         },
-        "assessed_at": "2026-10-31T13:49:30.184+00:00",
+        "assessed_at": "2026-10-31T15:44:02.114+00:00",
         "latest_run": {
           "id": 9,
           "service_id": "notifications-service",
@@ -654,8 +654,8 @@
               "output": "retry check 4\nretry check 5\n.\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
             }
           ],
-          "duration_ms": 29,
-          "created_at": "2026-10-31T13:49:30.184+00:00"
+          "duration_ms": 28,
+          "created_at": "2026-10-31T15:44:02.114+00:00"
         },
         "open_findings": 10,
         "blockers": 0
@@ -664,9 +664,9 @@
         "id": "identity-service",
         "name": "identity-service",
         "team": "team-identity",
-        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-0vevv9rh/workspaces/identity-service",
+        "path": "/var/folders/08/34jn8r8s3wz6tsf9l5bl6l0r0000gn/T/agentready-loop-cmt3nc2p/workspaces/identity-service",
         "kind": "sample",
-        "created_at": "2026-10-31T13:49:29.967+00:00",
+        "created_at": "2026-10-31T15:44:01.897+00:00",
         "score": 96,
         "baseline_score": 96,
         "dimensions": {
@@ -679,7 +679,7 @@
           "delivery": 100,
           "task_context": 100
         },
-        "assessed_at": "2026-10-31T13:49:30.001+00:00",
+        "assessed_at": "2026-10-31T15:44:01.930+00:00",
         "latest_run": {
           "id": 3,
           "service_id": "identity-service",
@@ -734,7 +734,7 @@
             }
           ],
           "duration_ms": 32,
-          "created_at": "2026-10-31T13:49:30.001+00:00"
+          "created_at": "2026-10-31T15:44:01.931+00:00"
         },
         "open_findings": 1,
         "blockers": 0

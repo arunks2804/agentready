@@ -169,6 +169,18 @@ function bindMoves(refresh) {
   }));
 }
 
+function fixRow(fix) {
+  return `<div class="fix"><div><strong>${esc(fix.title)}</strong><div class="muted">${esc(fix.note)}</div></div>
+    <button class="ghost" data-fix="${esc(fix.id)}" ${fix.applied ? "disabled" : ""}>${fix.applied ? "Applied" : "Apply"}</button></div>`;
+}
+
+function fixList(fixes) {
+  if (!fixes.length) return `<p class="muted">No scripted fixes for this service.</p>`;
+  const others = fixes.filter((fix) => !fix.recommended);
+  return `${fixes.filter((fix) => fix.recommended).map(fixRow).join("")}
+    ${others.length ? `<details><summary>Other changes to try</summary>${others.map(fixRow).join("")}</details>` : ""}`;
+}
+
 function traceRow(t) {
   const c = t.classification;
   return `<tr><td>${esc(t.title)}<div class="muted">${esc(t.agent)}</div></td><td>${provenance(t.provenance)}</td>
@@ -206,8 +218,7 @@ async function renderService(id) {
     <section class="grid two">
       <div class="card"><h2>Score and outcome over time</h2>${historyChart(s.history)}</div>
       <div class="card"><h2>Simulate a team fix</h2><p class="muted">Demo stand-in for a commit: it changes files in the sample repository. Reassess afterwards to see the measured result.</p>
-        ${s.fixes.length ? s.fixes.map((fix) => `<div class="fix"><div><strong>${esc(fix.title)}</strong><div class="muted">${esc(fix.note)}</div></div>
-          <button class="ghost" data-fix="${esc(fix.id)}" ${fix.applied ? "disabled" : ""}>${fix.applied ? "Applied" : "Apply"}</button></div>`).join("") : `<p class="muted">No scripted fixes for this service.</p>`}
+        ${fixList(s.fixes)}
       </div>
     </section>
     <section class="card" style="margin-bottom:16px"><h2>Open findings (${open.length})</h2>
