@@ -286,9 +286,9 @@ def run(args) -> Path | None:
 
         # ================================================================== opening
         d.slide('<div class="kicker">Product demo</div><h1>AgentReady</h1>'
-                '<p class="lead">A first-day test for your codebase: can an AI coding assistant actually get its work done here?</p>')
-        with Scene(d, "This is AgentReady. Think of it as a first-day test for your codebase: "
-                      "can an AI coding assistant actually get its work done here?", pad=0.6):
+                '<p class="lead">Can an AI coding assistant get its work done here? Find what stops it, get it fixed, and prove the fix worked.</p>')
+        with Scene(d, "This is AgentReady. It finds what stops AI coding assistants from finishing work on a service, "
+                      "gets it to the team that owns it, and retries after the fix to prove it worked.", pad=0.6):
             pass
         d.slide('<div class="kicker">Why it matters</div><h2>Capable assistants still get stuck</h2>'
                 '<ul><li>Companies now give <b>AI coding assistants</b> real engineering work</li>'
