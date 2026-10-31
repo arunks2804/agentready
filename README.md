@@ -12,6 +12,8 @@ supporting signal, and a higher score alone proves nothing.
 
 📄 **Start here: [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md)** covers the problem, the users, the product, the decisions and the scope. Evidence from a full run is in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
 
+🎬 **Presenting it? [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md)** explains exactly what is real, prepared and simulated, with a click-by-click script and likely questions.
+
 ## Run
 
 ```bash
