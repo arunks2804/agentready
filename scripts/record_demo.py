@@ -183,11 +183,11 @@ class Demo:
 
     def slide(self, html: str | None) -> None:
         if html is None:
-            self.page.evaluate("() => document.getElementById('demo-slide').classList.remove('show')")
+            self.page.evaluate("() => { document.getElementById('demo-slide').classList.remove('show'); document.getElementById('demo-cursor').style.display = ''; }")
             self.page.wait_for_timeout(650)
             return
         self.page.evaluate("""h => { const s = document.getElementById('demo-slide'); s.querySelector('.inner').innerHTML = h;
-            s.classList.add('show'); }""", html)
+            s.classList.add('show'); document.getElementById('demo-cursor').style.display = 'none'; }""", html)
         self.page.wait_for_timeout(650)
 
     def _move(self, x: float, y: float) -> None:
@@ -338,13 +338,21 @@ def run(args) -> Path | None:
                       "If the coding agent can't complete it, it raises an issue to the platform. The platform analyses the issue, the gap goes to the owning team, "
                       "it's fixed, and the service is reassessed. This part isn't built yet. This demo shows the first assessment only.", pad=0.5):
             pass
-        d.slide(None)
 
         # ================================================================== close
-        d.go("#/", "notifications-service")
-        d.show(page.locator(".card", has_text="Readiness checks").first)
-        with Scene(d, "AgentReady keeps readiness evidence and coding outcomes separate. A good readiness result doesn't guarantee every future task. "
-                      "The next step is making the real coding agent reliable.", pad=1.0):
+        d.slide('<div class="kicker">AgentReady</div>'
+                '<h2>Don\'t just ask whether the AI agent is ready for work. Make sure it always has what it needs to do the work.</h2>'
+                '<ul><li>Shows whether a service is ready <b>before work is assigned</b></li>'
+                '<li>Finds what\'s missing <b>whenever agents get stuck</b></li>'
+                '<li>Gives every gap an <b>owner and evidence</b></li>'
+                '<li>Closes a gap only when <b>reassessment confirms the fix</b></li>'
+                '<li><b>Repeats as work continues</b>, so agents can work smoothly</li></ul>'
+                '<div class="note">Early prototype. Making the real coding agent reliable comes next.</div>')
+        with Scene(d, "AgentReady shows whether a service is ready for AI coding agents before work is assigned, and finds what's missing whenever agents get stuck. "
+                      "Every gap has an owner and evidence, and a gap closes only when reassessment confirms the fix. "
+                      "The process repeats as work continues, so agents can work smoothly. "
+                      "Don't just ask whether the AI agent is ready for work. Make sure it always has what it needs to do the work. "
+                      "This is an early prototype, and the next step is making the real coding agent reliable.", pad=1.2):
             pass
         (AUDIO / "timings.txt").write_text("\n".join(f"{offset:.2f} {path}" for offset, path in narrator.segments) + "\n")
         raw = page.video.path() if not args.no_video else None

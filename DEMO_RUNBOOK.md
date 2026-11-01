@@ -41,7 +41,7 @@ The Coding Agent is refused until the agent's findings are closed, which keeps t
 
 ## 4. The recorded video
 
-The video runs for 2:31, and follows steps 1 to 5. Recreate it with `python3 scripts/record_demo.py`. It stops if the app doesn't show what the narration says.
+The video runs for 2:49, and follows steps 1 to 5. Recreate it with `python3 scripts/record_demo.py`. It stops if the app doesn't show what the narration says.
 
 | Time | Part |
 |---|---|
@@ -50,10 +50,10 @@ The video runs for 2:31, and follows steps 1 to 5. Recreate it with `python3 scr
 | 0:41 | Gap Analysis Agent findings |
 | 0:54 | Assignment |
 | 1:07 | Simulated team fix |
-| 1:21 | Reassessment |
-| 1:39 | Coding task |
+| 1:20 | Reassessment |
+| 1:38 | Coding task |
 | 1:51 | What happens later (not built) |
-| 2:20 | Close |
+| 2:20 | Conclusion slide |
 
 ## 5. Questions you may get
 

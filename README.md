@@ -6,7 +6,7 @@ Checks whether a service is ready for AI coding agents **before** work is assign
 
 [![AgentReady demo — click to play](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated demo (2:31, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). The video was recorded on one machine. Nothing runs in your browser. The voiceover is AI-generated (Piper, run locally).
+**▶ [Watch the narrated demo (2:49, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). The video was recorded on one machine. Nothing runs in your browser. The voiceover is AI-generated (Piper, run locally).
 
 📄 [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md) covers the product and its scope. 🎬 [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md) gives a click-by-click script. 📊 [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md) has the real model results.
 
