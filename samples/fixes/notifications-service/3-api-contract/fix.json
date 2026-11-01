@@ -1,0 +1,1 @@
+{"title": "Correct the API contract", "cites": ["openapi.yaml"], "note": "Prepared example fix. Makes the contract match what the code does.", "order": 3, "recommended": true}

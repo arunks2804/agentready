@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info: {title: notifications-service, version: 1.2.0}
+paths:
+  /notifications:
+    post:
+      summary: Send a notification from a template
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [template, recipient, fields]
+              properties:
+                template: {type: string, enum: [welcome, password_reset]}
+                recipient: {type: string}
+                fields: {type: object}
+      responses:
+        "202":
+          description: Accepted. Every notification is delivered by email.
+          content:
+            application/json:
+              example: {message_id: m_1, channel: email}

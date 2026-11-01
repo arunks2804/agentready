@@ -1,1 +1,1 @@
-{"title": "Add the service to the catalog", "check_id": "catalog_entry", "note": "Recommended fix. Lets the service be found.", "order": 1, "recommended": true}
+{"title": "Add the service to the catalog", "check_id": "catalog_entry", "note": "Prepared example fix. Lets the service be found.", "order": 1, "recommended": true}

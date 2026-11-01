@@ -1,3 +1,0 @@
-{"id": "NOTIF-877", "title": "Stop webhook delivery after five attempts",
- "keywords": ["webhook"], "target_file": "src/notifications/webhooks.py", "requires_api_spec": true,
- "acceptance_criteria": ["should_retry(5) returns False", "All service tests pass"]}

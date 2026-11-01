@@ -1,5 +1,0 @@
-{"external_id": "sim-notifications-02", "service": "notifications-service", "agent": "Simulated coding agent", "provenance": "simulated",
- "title": "NOTIF-902 add delivery status field", "outcome": "failed",
- "events": [
-  {"step": 1, "action": "find API contract", "output": "no openapi spec found"},
-  {"step": 2, "action": "guess response shape", "output": "Agent guessed the schema; reviewer rejected the change."}]}

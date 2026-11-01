@@ -1,8 +1,9 @@
 """Record the narrated AgentReady product demo (Playwright + Chromium, 1920x1080, British Piper voiceover).
 
-Same method as the AgentHill demo: opening slides, then chapters narrated over real clicks in the running
-app. Numbers spoken and captioned are read from the page at recording time. The app runs on its own port
-with a temporary data folder, so it never touches a running copy.
+One opening slide, then narration over real clicks in the running app, in Simulation mode. Agent and Jira
+steps use prepared data and are labelled on screen. Script checks and file fixes are real, and the story stops
+if the page does not show what the narration says. The app runs on its own port with a temporary data folder,
+so it never touches a running copy.
 
     python scripts/record_demo.py              # -> docs/demo/agentready-demo.mp4
     python scripts/record_demo.py --no-video   # end-to-end UI test only (no audio)
@@ -34,10 +35,9 @@ OVERLAY_JS = r"""
   if (document.getElementById('demo-style')) return;
   const st = document.createElement('style'); st.id = 'demo-style';
   st.textContent = `
-  html { overflow-x: hidden; }
-  .page-head + .callout { display: none; }
+  html { overflow-x: hidden; scroll-behavior: smooth; }
+  body { padding-bottom: 130px; }
   main, .top { zoom: 1.3; }
-  .top { position: relative; z-index: 5; }
   #demo-cursor { position: fixed; z-index: 100000; left: 960px; top: 540px; width: 30px; height: 30px; pointer-events: none;
     transition: left .75s cubic-bezier(.4,.0,.2,1), top .75s cubic-bezier(.4,.0,.2,1); filter: drop-shadow(0 2px 3px rgba(0,0,0,.45)); }
   #demo-cursor.click::after { content: ''; position: absolute; left: -16px; top: -16px; width: 34px; height: 34px; border-radius: 50%;
@@ -56,22 +56,10 @@ OVERLAY_JS = r"""
   #demo-slide li { font-size: 29px; color: #e2e8f0; line-height: 1.35; padding-left: 46px; position: relative; }
   #demo-slide li::before { content: ''; position: absolute; left: 0; top: 13px; width: 18px; height: 18px; border-radius: 5px; background: #3987e5; }
   #demo-slide li b { color: #fff; }
-  #demo-slide .loop { display: flex; gap: 10px; margin-top: 40px; align-items: center; flex-wrap: nowrap; white-space: nowrap; }
-  #demo-slide .loop span.step { background: rgba(57,135,229,.18); border: 1px solid rgba(141,189,243,.5); color: #e3effc; padding: 14px 18px;
-    border-radius: 14px; font-size: 26px; font-weight: 650; }
-  #demo-slide .loop span.arrow { color: #3987e5; font-size: 30px; }
   #demo-slide .note { margin-top: 44px; font-size: 26px; color: #fcd34d; border-left: 4px solid #f59e0b; padding-left: 18px; line-height: 1.4; }
-  #demo-slide .chapter-num { font-size: 150px; font-weight: 800; color: #3987e5; line-height: 1; margin-bottom: 10px; }
-  #demo-slide .tbl { border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 29px; }
-  #demo-slide .tbl th { text-align: left; color: #8dbdf3; font-size: 21px; text-transform: uppercase; letter-spacing: .08em; padding: 10px 16px; border-bottom: 1px solid rgba(141,189,243,.35); }
-  #demo-slide .tbl td { padding: 14px 16px; border-bottom: 1px solid rgba(148,163,184,.18); color: #e2e8f0; }
-  #demo-slide .tbl td:last-child b { color: #6ee7b7; }
-  #demo-caption { pointer-events: none; position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 99995;
-    background: rgba(17,24,39,.94); color: #fff; padding: 14px 28px; border-radius: 12px; font: 600 29px/1.3 Inter, -apple-system, sans-serif;
-    max-width: 1500px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,.35); }
-  #demo-chip { pointer-events: none; position: fixed; right: 24px; top: 20px; z-index: 99995; background: #1c5cab; color: #fff;
-    padding: 8px 16px; border-radius: 999px; font: 700 17px Inter, -apple-system, sans-serif; }
-  main { transition: transform .85s cubic-bezier(.4,0,.2,1); will-change: transform; }
+  #demo-caption { pointer-events: none; position: fixed; left: 0; right: 0; bottom: 0; min-height: 104px; z-index: 99995;
+    display: flex; align-items: center; justify-content: center; background: #111827; color: #fff; padding: 14px 120px;
+    font: 600 31px/1.3 Inter, -apple-system, sans-serif; text-align: center; }
   `;
   document.head.appendChild(st);
   const c = document.createElement('div'); c.id = 'demo-cursor';
@@ -119,13 +107,9 @@ class Narrator:
         return now
 
 
-BANNED_WORDS = ("different", "one cent", "assistant", "makes the fix", "probe")
-# Captions keep the exact names. These respellings are only for the voice.
-SPOKEN = {
-    "BILL-2141": "bill twenty one forty one", "NOTIF-877": "notif eight seven seven",
-    "BILLING_TAX_TABLE_PATH": "billing tax table path", "KeyError": "key error",
-    "notifications-service": "notifications service", "team-billing": "team billing", "team-messaging": "team messaging",
-}
+BANNED_WORDS = ("different", "one cent", "assistant", "makes the fix", "probe", "billing")
+# Captions keep the exact text. These respellings are only for the voice.
+SPOKEN = {"6 of 17": "six of seventeen", "9 of 17": "nine of seventeen", "4701": "forty seven oh one"}
 
 
 def caption_chunks(text: str) -> list[str]:
@@ -197,12 +181,6 @@ class Demo:
                 el.textContent = t; };
             window.__cues = cues.map(([t, ms]) => setTimeout(() => show(t), ms)); }""", cues)
 
-    def chip(self, text: str | None) -> None:
-        self.page.evaluate("""t => { let el = document.getElementById('demo-chip');
-            if (!t) { el && el.remove(); return; }
-            if (!el) { el = document.createElement('div'); el.id = 'demo-chip'; document.body.appendChild(el); }
-            el.textContent = t; }""", text)
-
     def slide(self, html: str | None) -> None:
         if html is None:
             self.page.evaluate("() => document.getElementById('demo-slide').classList.remove('show')")
@@ -231,93 +209,39 @@ class Demo:
         loc.click()
         self.page.wait_for_timeout(350)
 
-    def zoom(self, target: Locator | str, scale: float = 1.4) -> None:
+    def show(self, target: Locator | str) -> None:
+        """Brings something to the middle of the area above the caption bar."""
         loc = self.page.locator(target).first if isinstance(target, str) else target
-        self.unzoom(fast=True)
-        loc.evaluate("el => el.scrollIntoView({block: 'center'})")
-        self.page.wait_for_timeout(300)
+        loc.evaluate("el => { const b = el.getBoundingClientRect(); scrollBy(0, b.top - Math.max(130, (innerHeight - 110 - b.height) / 2)); }")
+        self.page.wait_for_timeout(800)
         box = loc.bounding_box()
-        if not box:
-            return
-        self._move(box["x"] + min(box["width"] * 0.5, 80), box["y"] + min(box["height"] * 0.5, 40))
-        self.page.wait_for_timeout(600)
-        self.page.evaluate("""([x, y, s]) => { const m = document.querySelector('main'); const b = m.getBoundingClientRect();
-            const z = parseFloat(getComputedStyle(m).zoom) || 1;
-            m.style.transformOrigin = ((x - b.left) / z) + 'px ' + ((y - b.top) / z) + 'px'; m.style.transform = 'scale(' + s + ')'; }""",
-                           [box["x"] + box["width"] / 2, box["y"] + box["height"] / 2, scale])
-        self.page.wait_for_timeout(950)
-
-    def unzoom(self, fast: bool = False) -> None:
-        was = self.page.evaluate("() => { const m = document.querySelector('main'); const z = m.style.transform && m.style.transform !== 'none'; m.style.transform = 'none'; return z; }")
-        if was:
-            self.page.wait_for_timeout(300 if fast else 900)
+        if box:
+            self._move(box["x"] + min(box["width"] * 0.5, 80), box["y"] + min(box["height"] * 0.5, 40))
+        self.page.wait_for_timeout(400)
 
     def go(self, hash_: str, heading: str) -> None:
         """Move between pages through the app's own links."""
-        self.unzoom(fast=True)
-        link = self.page.locator(f'a[href="{hash_}"]').first
-        self.click(link, settle=400)
+        self.click(self.page.locator(f'a[href="{hash_}"]').first, settle=300)
         self.page.wait_for_selector(f"h1:has-text('{heading}')")
-        self.page.evaluate("() => scrollTo(0, 0)")
+        self.page.evaluate("() => scrollTo({top: 0, behavior: 'instant'})")
         self.page.wait_for_timeout(350)
-
-    def chapter(self, num: int, title: str, subtitle: str) -> None:
-        self.caption(None)
-        self.chip(None)
-        self.unzoom(fast=True)
-        with Scene(self, f"Part {num}. {title}.", pad=0.4):
-            self.slide(f'<div class="chapter-num">{num}</div><h2>{title}</h2><p class="lead">{subtitle}</p>')
-        self.slide(None)
-        self.chip(f"{num} · {title}")
-
-    def fix_panel(self, fix_id: str) -> None:
-        """Bring the recommended fix on screen before the narration starts."""
-        self.unzoom(fast=True)
-        self.page.locator(f'[data-fix="{fix_id}"]').evaluate("el => el.scrollIntoView({block: 'center'})")
-        self.page.wait_for_timeout(500)
-
-    def fix_and_reassess(self, fix_id: str) -> None:
-        self.fix_and_reassess_apply(fix_id)
-        self.reassess()
-
-    def fix_and_reassess_apply(self, fix_id: str) -> None:
-        self.click(f'[data-fix="{fix_id}"]', settle=450)
-        self.page.wait_for_selector(f'[data-fix="{fix_id}"]:disabled')
-
-    def reassess(self) -> None:
-        self.page.locator("#assess").evaluate("el => el.scrollIntoView({block: 'center'})")
-        self.page.wait_for_timeout(300)
-        runs = self.page.locator("details table tbody tr").count()
-        self.click("#assess", settle=450)
-        self.page.wait_for_function("n => document.querySelectorAll('details table tbody tr').length > n", arg=runs)
-        self.page.wait_for_timeout(300)
-
-    def score(self) -> int:
-        return int(re.search(r"Score (\d+)", self.page.locator(".page-head .sub").inner_text()).group(1))
-
-    def task(self) -> str:
-        return self.page.locator(".card .status").first.inner_text().strip()
 
     def finding(self, title: str) -> Locator:
         return self.page.locator(".finding", has_text=title).first
 
-    def finding_status(self, title: str) -> str:
-        return self.finding(title).locator(".finding-head .chip").inner_text().strip()
+    def assert_text(self, text: str) -> None:
+        self.page.wait_for_selector(f"text={text}")
 
-    def overview(self) -> dict:
-        text = self.page.locator(".hero .card").first.inner_text()
-        done, total = re.search(r"(\d+) of (\d+) tasks", text).groups()
-        rate = self.page.locator(".bignum").inner_text().strip()
-        score = self.page.locator(".hero .card").nth(1).locator(".tile-num").inner_text().strip()
-        return {"done": int(done), "total": int(total), "rate": rate, "score": score}
+    def fix(self, title: str) -> None:
+        """Applies a prepared fix from its finding, which really writes files in the sample repository."""
+        finding = self.finding(title)
+        self.show(finding)
+        self.click(finding.locator("[data-fix]"), settle=300)
+        self.page.wait_for_function("t => ![...document.querySelectorAll('.finding')].some(f => f.innerText.includes(t) && f.querySelector('[data-fix]'))", arg=title)
+        self.page.wait_for_timeout(300)
 
-
-NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
-
-
-def words(n) -> str:
-    n = int(n)
-    return NUM[n] if 0 <= n < len(NUM) else str(n)
+    def checks_passed(self) -> str:
+        return self.page.locator(".stat").first.inner_text().strip()
 
 
 def expect(condition: bool, message: str) -> None:
@@ -344,182 +268,100 @@ def run(args) -> Path | None:
 
         # ================================================================== opening
         d.slide('<div class="kicker">Product demo</div><h1>AgentReady</h1>'
-                '<p class="lead">Can an AI coding agent complete its work here? Find what stops it, get it fixed, and prove the fix worked.</p>')
-        with Scene(d, "This is AgentReady. It finds what stops an AI coding agent from completing its work, assigns the readiness gap to the team that owns the service, "
-                      "and reruns the work to prove the fix worked.", pad=0.6):
-            pass
-        d.slide('<div class="kicker">Why it matters</div><h2>Skilled coding agents still get stuck</h2>'
-                '<ul><li>Companies now give <b>engineering work</b> to AI coding agents</li>'
-                '<li>Think of a skilled new starter with <b>no building pass and no instructions</b></li>'
-                '<li>If they get stuck, the fault <b>may not be theirs</b></li></ul>')
-        with Scene(d, "Companies now give engineering work to AI coding agents. But think of a skilled new starter with no building pass and no instructions. "
-                      "If they get stuck, the fault may not be theirs. Coding agents get stuck for the same reason.", pad=0.5):
-            pass
-        d.slide('<div class="kicker">How it works</div><h2>Five steps</h2>'
-                '<div class="loop"><span class="step">Run the work</span><span class="arrow">→</span><span class="step">Find what blocked it</span>'
-                '<span class="arrow">→</span><span class="step">Assign the team</span><span class="arrow">→</span><span class="step">Team fixes it</span>'
-                '<span class="arrow">→</span><span class="step">Rerun the work</span></div>')
-        with Scene(d, "It works in five steps. Run the work. Find what blocked it. Assign it to the owning team. The team fixes it. Rerun the work.", pad=0.5):
-            pass
-        d.slide('<div class="kicker">Before we start</div><h2>How this demo works</h2>'
-                '<ul><li><b>No AI runs</b> in this demo, and no coding agent is called</li>'
-                '<li>A <b>script stands in</b> for a coding agent</li>'
-                '<li>A <b>ticket</b> is a Jira story, bug or enhancement. A real coding agent would read it and write the code change</li>'
-                '<li>The script copies in a <b>prepared code change</b></li>'
-                '<li>The <b>unit tests are real</b>, and so are their results</li>'
-                '<li>The services are <b>sample code</b>, and a button stands in for the team\'s fix</li></ul>'
-                '<div class="note">This shows how the method works. It does not show how much real coding agents improve.</div>')
-        with Scene(d, "Before we start, here is how this demo works. No AI runs in it, and no coding agent is called. A script stands in for a coding agent.", pad=0.3):
-            pass
-        with Scene(d, "A ticket is a Jira story, bug or enhancement. A real coding agent would read the ticket and write the code change. A script can't do that, so it copies in a code change prepared in advance. "
-                      "It then runs the real unit tests, and those test results are real.", pad=0.3):
-            pass
-        with Scene(d, "The three services are sample code, with problems added on purpose. A button stands in for the team's fix. "
-                      "So this shows how the method works. It does not show how much real coding agents improve.", pad=0.5):
+                '<p class="lead">Check whether a service is ready for AI coding agents before work is assigned to them.</p>'
+                '<div class="note">Local prototype with one sample service. Agent and Jira steps are simulated with prepared data. Script checks and file fixes are real.</div>')
+        with Scene(d, "This is AgentReady. It checks whether a service is ready for AI coding agents before work is assigned to them. "
+                      "This is a local prototype using one sample service, Notifications Service. In this demo, the agent and Jira steps are simulated with prepared data, "
+                      "because the coding agent isn't reliable yet. The script checks and file fixes are real, and simulated steps are labelled on screen.", pad=0.5):
             pass
         d.slide(None)
 
-        # ================================================================== 1. where we start
-        d.chapter(1, "Where we start", "Three sample services, three tickets")
-        base = d.overview()
-        expect(base["done"] == 1 and base["total"] == 3, "baseline should be 1 of 3")
-        d.zoom(page.locator(".hero .card").first, 1.3)
-        with Scene(d, f"We have three sample services, and each has one ticket. Right now, only {words(base['done'])} of the {words(base['total'])} is completed."):
+        # ================================================================== find gaps
+        d.point("#service-select", settle=500)
+        d.click("#assess", settle=400)
+        page.wait_for_selector(".stat")
+        before = d.checks_passed()
+        expect(before == "6 of 17", f"first assessment should pass 6 of 17, got {before}")
+        d.show(page.locator(".card", has_text="Readiness checks").first)
+        with Scene(d, "We assess the service. Scripts check the facts: 6 of 17 pass."):
             pass
-        billing_score = int(page.locator("section.card").first.locator("tbody tr").nth(0).locator("td").nth(4).inner_text())
-        d.zoom(page.locator("section.card tbody tr").first, 1.35)
-        with Scene(d, f"Billing service is blocked, even with a readiness score of {billing_score} out of 100. Let's find out why."):
+        page.wait_for_selector(".running", state="detached", timeout=30_000)
+        d.go("#/findings", "Findings")
+        api = d.finding("API contract does not match the code")
+        d.show(api)
+        with Scene(d, "The simulated Gap Analysis Agent adds what scripts can't judge. The API contract doesn't match the code, and the template guide leaves out required steps."):
+            page.wait_for_timeout(4500)
+            d.show(d.finding("Template guide leaves out required steps"))
+
+        # ================================================================== assign
+        d.show(api)
+        with Scene(d, "AgentReady records each gap and assigns it to the owning team, with evidence, a recommendation and what must pass to close it. This happens inside the app. There's no Jira link yet."):
             pass
 
-        # ================================================================== 2. what blocked the ticket
-        d.chapter(2, "What blocked the work", "One undocumented environment variable")
-        d.go("#/service/billing-service", "billing-service")
-        d.zoom(page.locator(".card", has_text="Latest task").locator("p.muted").first, 1.6)
-        with Scene(d, "This is BILL-2141, a bug ticket. Billing service works out what to charge a customer who uses only part of a billing period. That amount often has decimals. "
-                      "The code should round it to the nearest whole number, but it just cuts the decimals off, so the charge comes out slightly too low."):
-            pass
-        d.zoom(".steps", 1.15)
-        with Scene(d, "The script stands in for a coding agent and follows the same steps. It finds the service, locates the code, and finds the test command. "
-                      "It then copies in the prepared code change. Next, it runs the real unit tests to validate that change."):
-            pass
-        d.zoom(".steps li.blocked", 1.35)
-        with Scene(d, "The unit tests fail here. The error is KeyError, BILLING_TAX_TABLE_PATH. The code needs that environment variable, and nothing documents it. "
-                      "So the change can't be validated, whether by a person or a coding agent."):
-            pass
-        target = "Required settings work"
-        d.zoom(d.finding(target), 1.2)
-        with Scene(d, "AgentReady records this as a blocker, with the test failure as evidence, and one recommended fix: add a working sample settings file. It assigns the blocker to team-billing."):
-            pass
+        # ================================================================== fix
+        with Scene(d, "The team fixes the gaps. Here, a prepared fix really changes the sample files."):
+            for title in ("API contract does not match the code", "Template guide leaves out required steps",
+                          "Service is registered in the catalog", "Test command is documented"):
+                d.fix(title)
 
-        # ================================================================== 3. the team fixes it
-        d.chapter(3, "The team fixes it", "One recommended fix, then a rerun")
-        fix = "3-env-working-config"
-        d.fix_panel(fix)
-        with Scene(d, "team-billing applies the recommended fix. In this demo, a button stands in for that commit."):
-            d.fix_and_reassess_apply(fix)
-        with Scene(d, "Now AgentReady reruns the work."):
-            d.reassess()
-        expect(d.task() == "Completed", "the recommended fix should complete the task")
-        d.zoom(page.locator(".card", has_text="Latest task").first, 1.05)
-        with Scene(d, "The unit tests now pass, and the work completes. The blocker is verified because the rerun proved it, not because someone said so."):
-            pass
+        # ================================================================== reassess
+        d.go("#/", "notifications-service")
+        d.show("#reassess")
+        with Scene(d, "A team can't close its own finding. We reassess."):
+            d.click("#reassess", settle=400)
+        page.wait_for_function("() => document.querySelector('.stat')?.innerText.trim() === '9 of 17'")
+        page.wait_for_selector(".running", state="detached", timeout=30_000)
+        expect(d.checks_passed() == "9 of 17", "reassessment should pass 9 of 17")
+        data = page.evaluate("() => fetch('/api/services/notifications-service').then(r => r.json())")
+        expect(all(f["status"] == "verified" for f in data["findings"] if f["source"] != "script"), "the agent's findings should be closed")
+        d.show(page.locator(".card", has_text="Readiness checks").first)
+        with Scene(d, "Script checks rise to 9 of 17, and the simulated recheck closes the agent's two findings. The remaining gaps stay open and visible."):
+            page.wait_for_timeout(5500)
+            d.go("#/findings", "Findings")
 
-        # ================================================================== 4. a view for each team
-        d.chapter(4, "A view for each team", "Service teams and the platform team")
-        d.go("#/remediation", "Remediation")
-        d.zoom(page.locator("section.card").first, 1.1)
-        with Scene(d, "Each service team sees its own remediation queue, with the most serious issues first."):
-            pass
-        d.go("#/platform", "Platform insights")
-        d.zoom(page.locator("section.card").first, 1.05)
-        with Scene(d, "The platform team that runs the coding agents sees which blockers recur, so a shared problem can be solved once."):
-            pass
+        # ================================================================== coding task
+        d.go("#/coding", "Coding task validation")
+        with Scene(d, "Now the coding agent attempts a task: add a payment failed template. In this simulated run, the task passes."):
+            d.click("#validate", settle=300)
+            page.wait_for_selector(".stat:text-is('Passed')", timeout=30_000)
+            d.show(page.locator(".card", has_text="Outcome").first)
 
-        # ================================================================== 5. three blockers
-        d.chapter(5, "One service, three blockers", "One layer at a time")
-        d.go("#/", "Can agents finish work")
-        d.go("#/service/notifications-service", "notifications-service")
-        d.zoom(page.locator(".card", has_text="Latest task").locator("p.muted").first, 1.6)
-        with Scene(d, "This is NOTIF-877, on notifications-service. It asks for webhook delivery to stop after five attempts. The code keeps retrying forever, and it should stop at five."):
-            pass
-        d.zoom(".steps li.blocked", 1.35)
-        with Scene(d, "The script stands in for a coding agent and starts with the first step: find the service. It searches the service catalog for webhook. "
-                      "There is no catalog entry, so it stops here. It never reaches the code."):
-            pass
-        d.zoom(d.finding("Service is registered in the catalog"), 1.2)
-        with Scene(d, "AgentReady records this as a blocker, and recommends adding the service to the catalog. It assigns the blocker to team-messaging."):
-            pass
-        d.fix_panel("1-catalog-entry")
-        with Scene(d, "team-messaging adds a catalog entry. A button stands in for that commit. AgentReady then reruns the work."):
-            page.wait_for_timeout(2600)
-            d.fix_and_reassess("1-catalog-entry")
-        d.zoom(".steps", 1.3)
-        with Scene(d, "Standing in for the coding agent again, the script now finds the service and locates the code. "
-                      "Next, it looks for the API contract, because this change affects how the webhook API behaves. There is no contract, so it stops here."):
-            pass
-        d.zoom("#stop-kind", 2.0)
-        with Scene(d, "This is a rule-based stop. The script stopped before running any tests, because its rule requires a contract for this kind of change."):
-            pass
-        d.zoom(d.finding("API contract is published"), 1.2)
-        with Scene(d, "AgentReady records the blocker, and recommends publishing the API contract. team-messaging publishes it, and AgentReady reruns the work."):
-            page.wait_for_timeout(4200)
-            d.fix_panel("2-openapi")
-            d.fix_and_reassess("2-openapi")
-        d.zoom(".steps", 1.3)
-        with Scene(d, "The script gets further. It finds the service, locates the code, and reads the new API contract. "
-                      "Next, it looks for the command that runs the unit tests. Nothing documents it, so it stops here. This is also a rule-based stop."):
-            pass
-        d.zoom(d.finding("Test command is documented"), 1.2)
-        with Scene(d, "AgentReady records the blocker, and recommends documenting the test command. team-messaging adds it, and AgentReady reruns the work."):
-            page.wait_for_timeout(4200)
-            d.fix_panel("3-test-command")
-            d.fix_and_reassess("3-test-command")
-        low = d.score()
-        expect(d.task() == "Completed", "notifications should complete")
-        d.zoom(".steps", 1.15)
-        with Scene(d, "Now the script gets through every step. It copies in the prepared code change, which stops retries at five attempts. "
-                      "It then runs the real unit tests, and they pass. The work completes."):
-            pass
-        d.zoom(".page-head", 1.5)
-        with Scene(d, f"Notifications service completed with a readiness score of only {low}. Billing service was blocked at {billing_score}. "
-                      "So a score alone can't show whether the work will complete. Only running it can."):
-            pass
+        # ================================================================== bug
+        d.click("#bug", settle=300)
+        page.wait_for_selector("text=Not fixed", timeout=30_000)
+        page.evaluate("() => scrollTo({top: 0, behavior: 'instant'})")
+        with Scene(d, "Later, a bug arrives. Customers in India aren't receiving login codes. The simulated coding agent can't fix it, because nothing explains error 4701, so it raises a simulated Jira request."):
+            page.wait_for_timeout(6500)
+            d.show(page.locator(".card", has_text="Jira request").first)
 
-        # ================================================================== 6. scripts and AI
-        d.chapter(6, "Scripts first, AI where it counts", "What scripts do, and what needs AI")
-        d.go("#/automation", "Scripts first")
-        counts = page.locator("#counts .tile-num")
-        assessments, task_runs, ai_calls = [counts.nth(i).inner_text().strip() for i in range(3)]
-        expect(ai_calls == "0", "this prototype makes no AI calls")
-        d.zoom("#counts", 1.25)
-        with Scene(d, f"Scripts did everything you just saw: {words(assessments)} assessments and {words(task_runs)} task runs, with zero AI model calls."):
-            pass
-        d.zoom("#script-jobs", 1.2)
-        with Scene(d, "Scripts handle the facts. Does a file exist? Do the unit tests pass? They are fast and cheap, so they can run on every change."):
-            pass
-        d.zoom("#ai-jobs", 1.2)
-        with Scene(d, "But a script can't understand a new ticket. In a real product, a real coding agent would read the ticket, write its own code change, and run the tests. "
-                      "If it failed, scripts would match known failures, and the Gap Analysis Agent would explain new ones. "
-                      "The owning team would fix the gap, and the coding agent would rerun the same ticket. These AI roles are planned, and not built yet."):
-            pass
-        d.zoom("#cost-note", 1.25)
-        with Scene(d, "This keeps cost down. Scripts check every change, and coding agents run only on a sample of the work. The saving hasn't been measured yet, because no real coding agent has been run."):
-            pass
-        d.unzoom()
-        d.chip(None)
-        d.go("#/", "Can agents finish work")
-        final = d.overview()
-        expect(final["done"] == 3, "all three tasks should complete")
+        # ================================================================== expose the gap
+        d.click("#diagnose-ticket", settle=300)
+        page.wait_for_selector("text=exposed a gap", timeout=30_000)
+        d.show(page.locator(".card", has_text="Jira request").first)
+        with Scene(d, "AgentReady reads that request and exposes the gap: the SMS sender rules aren't documented. It's assigned to team messaging."):
+            page.wait_for_timeout(3500)
+            d.go("#/findings", "Findings")
+            d.show(d.finding("SMS sender rules are not documented"))
+
+        # ================================================================== fix and rerun
+        with Scene(d, "The team adds the guide, a real file."):
+            d.fix("SMS sender rules are not documented")
+        d.go("#/", "notifications-service")
+        d.click("#reassess", settle=300)
+        page.wait_for_selector(".running", state="detached", timeout=30_000)
+        d.go("#/coding", "Coding task validation")
+        with Scene(d, "Reassessment closes the finding, and the simulated rerun fixes the bug."):
+            d.click("#bug", settle=300)
+            page.wait_for_selector(".stat:text-is('Fixed')", timeout=30_000)
+            page.evaluate("() => scrollTo({top: 0, behavior: 'instant'})")
+        data = page.evaluate("() => fetch('/api/services/notifications-service').then(r => r.json())")
+        expect(all(f["status"] == "verified" for f in data["findings"] if f["source"] != "script"), "the SMS finding should be closed")
 
         # ================================================================== close
-        d.slide('<div class="kicker">In summary</div><h2>Find what blocks the work, fix it, and prove it</h2>'
-                '<table class="tbl"><tr><th></th><th>Start</th><th>After the fixes</th></tr>'
-                f'<tr><td>Tickets completed</td><td>{base["done"]} of {base["total"]}</td><td><b>{final["done"]} of {final["total"]}</b></td></tr></table>'
-                '<div class="note">Sample services and a script, not a real coding agent. Testing with a real coding agent is the next step. '
-                'Voiceover is AI-generated (Piper, en-GB). All app footage is a live recording.</div>')
-        with Scene(d, f"In summary: {words(base['done'])} of the {words(base['total'])} tickets was completed at the start, and all {words(final['done'])} at the end, on these sample services. "
-                      "The next step is to test this with a real coding agent on real repositories. "
-                      "AgentReady: don't just ask whether the AI is ready for the work. Ask whether the work is ready for the AI.", pad=1.2):
+        d.go("#/", "notifications-service")
+        d.show(page.locator(".card", has_text="Readiness checks").first)
+        with Scene(d, "AgentReady keeps readiness evidence and coding outcomes separate. A good readiness result doesn't guarantee every future task. "
+                      "The next step is making the real coding agent reliable.", pad=1.0):
             pass
         (AUDIO / "timings.txt").write_text("\n".join(f"{offset:.2f} {path}" for offset, path in narrator.segments) + "\n")
         raw = page.video.path() if not args.no_video else None

@@ -8,15 +8,24 @@
 </head>
 <body>
   <header class="top">
-    <a class="brand" href="#/">AgentReady</a>
-    <nav aria-label="Main">
-      <a href="#/" data-nav="overview">Overview</a>
-      <a href="#/remediation" data-nav="remediation">Remediation</a>
-      <a href="#/platform" data-nav="platform">Platform insights</a>
-      <a href="#/traces" data-nav="traces">Agent traces</a>
-      <a href="#/automation" data-nav="automation">Scripts and AI</a>
-    </nav>
-    <button class="ghost" id="reset">Reset demo</button>
+    <div class="top-inner">
+      <a class="brand" href="#/">AgentReady</a>
+      <nav aria-label="Main">
+        <a href="#/" data-nav="readiness">Readiness</a>
+        <a href="#/findings" data-nav="findings">Findings</a>
+        <a href="#/coding" data-nav="coding">Coding task</a>
+        <a href="#/platform" data-nav="platform">Platform</a>
+        <a href="#/settings" data-nav="settings">Settings</a>
+      </nav>
+      <div class="top-tools">
+        <label class="service-pick">
+          <span class="sr">Service</span>
+          <select id="service-select"></select>
+        </label>
+        <button class="ghost" id="reset">Reset demo</button>
+      </div>
+    </div>
+  <div class="mode-banner" id="mode-banner" hidden>Simulation mode. Agent and Jira steps use prepared data, and no AI model runs. Script checks and file fixes are real.</div>
   </header>
   <main id="view" tabindex="-1"></main>
   <div id="tooltip" role="status" hidden></div>

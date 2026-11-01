@@ -1,0 +1,3 @@
+{"id": "NOTIF-912", "title": "Add a payment_failed notification template",
+ "description": "Add a new notification template named payment_failed. It is sent by email. It needs two fields, name and amount, and the message must include both. Sending it through the dispatcher must work. Add a test for it, and make sure all tests pass.",
+ "acceptance_criteria": ["render('payment_failed', ...) includes the name and amount", "A missing field is rejected", "The dispatcher sends it by email", "A test is added", "All service tests pass"]}

@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from . import store
+from . import jobs, ollama, sandbox, store
 from .checks import DIMENSIONS
 
 STATIC = Path(__file__).resolve().parent.parent / "static"
@@ -68,6 +68,27 @@ class TraceIn(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     outcome: Literal["failed", "completed"]
     events: list[TraceEvent] = Field(min_length=1, max_length=500)
+
+
+class SettingsIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mode: Literal["simulated", "real"] = "simulated"
+    base_url: str = Field(min_length=1, max_length=200)
+    gap_model: str = Field(max_length=120)
+    coding_model: str = Field(max_length=120)
+    timeout_s: int = Field(ge=10, le=600)
+    run_budget_s: int = Field(ge=30, le=3600)
+    num_ctx: int = Field(ge=2048, le=65536)
+    num_predict: int = Field(ge=128, le=8192)
+    gap_max_steps: int = Field(ge=1, le=30)
+    coding_max_steps: int = Field(ge=1, le=40)
+    test_timeout_s: int = Field(ge=5, le=120)
+
+
+class AgentRunIn(BaseModel):
+    kind: Literal["gap", "recheck", "coding", "bug", "diagnose"]
+    source_run_id: int | None = None
 
 
 def _require_service(service_id):
@@ -128,6 +149,38 @@ def apply_fix(service_id: str, fix_id: str):
     return store.service_detail(service_id)
 
 
+@app.get("/api/ollama")
+def get_ollama():
+    return jobs.ollama_status()
+
+
+@app.put("/api/settings")
+def put_settings(body: SettingsIn):
+    if not ollama.is_local(body.base_url):
+        raise HTTPException(422, "Ollama must run on this machine, so source code never leaves it.")
+    store.save_settings(body.model_dump())
+    return jobs.ollama_status()
+
+
+@app.post("/api/services/{service_id}/agent-runs", status_code=202)
+def start_agent_run(service_id: str, body: AgentRunIn):
+    service = _require_service(service_id)
+    if service["kind"] != "sample" and body.kind in ("coding", "bug"):
+        raise HTTPException(422, "AgentReady only runs code in bundled sample repositories.")
+    try:
+        return {"id": jobs.start(service, body.kind, body.source_run_id)}
+    except (jobs.JobError, sandbox.SandboxError, ollama.OllamaError) as error:
+        raise HTTPException(409, str(error)) from error
+
+
+@app.get("/api/agent-runs/{run_id}")
+def get_agent_run(run_id: int):
+    run = store.get_agent_run(run_id)
+    if run is None:
+        raise HTTPException(404, "Run not found")
+    return run
+
+
 @app.get("/api/findings")
 def get_findings():
     return store.list_findings()
@@ -160,6 +213,8 @@ def post_trace(body: TraceIn):
 
 @app.post("/api/demo/reset")
 def demo_reset():
+    if jobs.busy():
+        raise HTTPException(409, "An agent is running. Wait for it to finish.")
     store.reset()
     return {"ok": True}
 

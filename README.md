@@ -1,18 +1,14 @@
 # AgentReady
 
-Finds what stops AI coding agents from completing work on a repository, assigns
-the gaps to the owning teams, and checks whether the fixes actually help.
+Checks whether a service is ready for AI coding agents **before** work is assigned to them. It finds missing prerequisites, assigns each gap to the owning team, and proves a fix through reassessment.
 
-The primary outcome is **task completion rate**. The readiness score is a
-supporting signal, and a higher score alone proves nothing.
+**This is a local prototype. The demo runs in Simulation mode.** Agent and Jira steps use prepared data, because the real Coding Agent is not reliable yet. Script checks and file fixes are real.
 
 [![AgentReady demo — click to play](docs/demo/agentready-demo-preview.gif)](https://arunks2804.github.io/agentready/)
 
-**▶ [Watch the narrated product demo (8 min, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). It is written for a non-technical audience. Plain-English slides explain the problem and what is simulated, then each step is shown live in the app with full captions. Every number spoken is read from the page while it records. The British voiceover is AI-generated (Piper, run locally).
+**▶ [Watch the narrated demo (under 3 min, 1080p, with sound)](https://arunks2804.github.io/agentready/)** · [download the MP4](docs/demo/agentready-demo.mp4). The video was recorded on one machine. Nothing runs in your browser. The voiceover is AI-generated (Piper, run locally).
 
-📄 **Start here: [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md)** covers the problem, the users, the product, the decisions and the scope. Evidence from a full run is in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
-
-🎬 **Presenting it? [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md)** explains exactly what is real, prepared and simulated, with a click-by-click script and likely questions.
+📄 [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md) covers the product and its scope. 🎬 [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md) gives a click-by-click script. 📊 [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md) has the real model results.
 
 ## Run
 
@@ -23,44 +19,45 @@ python3 -m uvicorn app.main:app --port 8010
 
 Open http://127.0.0.1:8010. Tests: `python3 -m pytest`.
 
-## Demo path
+## The process
 
-1. **Overview:** 1 of 3 tasks finish at baseline.
-2. **billing-service:** the task is blocked because the tests need a tax rate file that nothing points to.
-3. Apply the recommended fix, *Add a working sample settings file*, then click **Reassess now**. The task finishes and the finding is verified.
-4. **notifications-service:** three blockers appear one at a time as each recommended fix is applied.
-5. **Reset demo** returns to baseline.
+1. Scripts and the Gap Analysis Agent find the gaps.
+2. AgentReady records each gap and assigns it to the owning team, inside the app. There is no Jira link yet.
+3. The team fixes it. In the demo, a prepared fix button really changes the sample files.
+4. Reassessment confirms the fix.
+5. The Coding Agent tries the task.
 
-To see that a score is not proof, reset the demo and open **Other changes to try** on billing-service. *Add architecture overview* raises the score and the task stays blocked. *Name the setting only* passes the static check, yet the finding reopens because the task still fails.
+The demo also shows a later bug: the Coding Agent cannot fix it and raises a Jira request, AgentReady reads the request and exposes a documentation gap, the team fixes it, and the rerun succeeds. All Jira steps are simulated.
 
 ## What is real and what is simulated
 
-| Part | Status |
-|---|---|
-| Readiness checks on sample and registered repos | Real: reads files on disk |
-| Probe task outcomes on sample repos | Mixed: billing-service's blocks are real test failures; notifications-service's three blocks are rule-based stops before any test runs |
-| The probe's code change | Scripted: applies a known correct change, so it tests the repo and not an LLM |
-| Team fixes in the demo | Simulated: stands in for a commit; the reassessment after it is real |
-| Failed agent traces | Simulated fixtures, labelled in the UI and excluded from task completion |
-| Sample repos, tickets and teams | Fictional |
-| Time to remediate | Real timestamps, but demo-clock seconds rather than engineering time |
+| Part | In Simulation mode (default) | In Real mode |
+|---|---|---|
+| 17 readiness checks | Real | Real |
+| Prepared fixes | Real file changes, prepared in advance | Same |
+| Gap Analysis Agent | **Simulated** | Real local model. Works, but slow and variable |
+| Reassessment of agent findings | **Simulated** | Real, but the latest version is unproven on a real run |
+| Coding Agent | **Simulated** | Real local model. **Not reliable** |
+| Bug and Jira request | **Simulated** | Not available |
 
-No real LLM agent has been run, so nothing here shows that an LLM's completion
-rate improves. That is the next thing to test.
+Switch modes under **Settings**. Real mode needs [Ollama](https://ollama.com) running locally with a model that supports tools. AgentReady reads the installed models at runtime and refuses a non-local Ollama address.
 
-## Scripts first, AI where it is needed
+## Real model results
 
-Scripts handle facts: file checks, builds and tests, reruns, known failure signatures, routing and metrics. AI is needed where judgement is required or where agent behaviour is the thing being measured, and there are two separate roles. A **coding agent**, an existing tool, attempts real tasks. The **Gap Analysis Agent**, part of AgentReady, explains new failures, judges whether documentation is usable, and drafts fixes for review.
+On the Notifications sample with `qwen3:8b`, run on one laptop:
 
-That split keeps cost down, because agents run on a sample while scripts screen every change. The saving is not measured yet. This prototype implements the script side only; both AI roles are planned. See [the brief](PRODUCT_BRIEF.md#scripts-first-ai-where-it-is-needed) for the full split.
+- The Gap Analysis Agent produced findings with verified quotes in 4 of 4 runs, at 7–19 minutes each.
+- The Coding Agent passed the task **0 of 5 times with the fixes in place**. It passed 5 of 5 on the unfixed repository, in an extra experiment. So this sample does **not** show that the fixes help a coding agent.
 
-## Reproduce the results and the demo
+Details are in [docs/examples/SUMMARY.md](docs/examples/SUMMARY.md).
 
-```bash
-python3 scripts/run_full_loop.py
-```
+## Safety of real runs
 
-That rewrites `docs/examples/`. To re-record the video you also need ffmpeg and a Piper voice in `var/voices/`:
+Model-written code runs only in a temporary copy of a bundled sample, with an allowlisted test command, under a macOS sandbox with no network, no writes outside the copy and no reads of the home folder. If the sandbox is unavailable, the run is refused. A model's claim of success is never trusted: AgentReady reads the diff and runs its own acceptance tests.
+
+## Re-record the demo
+
+You need ffmpeg and a Piper voice in `var/voices/`:
 
 ```bash
 python3 -m pip install -r requirements-demo.txt
@@ -69,17 +66,13 @@ python3 -m piper.download_voices --download-dir var/voices en_GB-cori-high
 python3 scripts/record_demo.py
 ```
 
-The recorder runs its own copy of the app on port 8019 and stops if the demo story does not hold.
-
-## How verification works
-
-A finding stays open while its check fails **or** while the measured task is
-blocked on it. Teams can submit a fix, but only a reassessment can verify one.
+The recorder runs its own copy of the app on port 8019 and stops if the app does not show what the narration says.
 
 ## Limits
 
-- Registered repositories get static checks only. Their code is never executed, so their task outcome is "not measured".
-- Findings come only from static checks and probe runs. Traces link to existing findings and do not create new ones.
-- Checks use file conventions and suit Python and common layouts best.
-- The app has no authentication, so keep it bound to localhost. It rejects other hosts and cross-site writes.
-- Traces uploaded through the API are always stored as Simulated, because they cannot be verified.
+- This is a proof of concept, not a production system. It has no login and should stay on localhost.
+- Agent and Jira steps in the demo are simulated. There is no Jira integration.
+- A good readiness result does not guarantee every future task. Any conclusion applies only to this service, setup and scenario.
+- The sandbox is macOS only.
+- Registered repositories get static checks only. Their code is never run.
+- `billing-service` and `identity-service` remain as optional test data, and are not part of the demo.

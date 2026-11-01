@@ -17,9 +17,8 @@ def fix_and_reassess(client, service, fix_id):
 
 def test_baseline_outcomes_are_really_measured(client):
     assert detail(client, "billing-service")["latest_run"]["status"] == "blocked"
-    assert detail(client, "notifications-service")["latest_run"]["blocked_check"] == "catalog_entry"
     assert detail(client, "identity-service")["latest_run"]["status"] == "completed"
-    assert client.get("/api/overview").json()["completion"]["baseline"] == {"completed": 1, "total": 3}
+    assert client.get("/api/overview").json()["completion"]["baseline"] == {"completed": 1, "total": 2}
 
 
 def test_billing_blocker_is_env_with_evidence(client):
@@ -56,16 +55,22 @@ def test_working_fix_completes_task_and_verifies(client):
     assert data["latest_run"]["status"] == "completed"
     assert finding(data, "env_vars_documented")["status"] == "verified"
     latest = client.get("/api/overview").json()["completion"]["latest"]
-    assert latest == {"completed": 2, "total": 3}
+    assert latest == {"completed": 2, "total": 2}
 
 
-def test_stacked_blockers_surface_one_at_a_time(client):
-    seen = []
-    for fix_id in ("1-catalog-entry", "2-openapi", "3-test-command"):
-        seen.append(detail(client, "notifications-service")["latest_run"]["blocked_check"])
-        data = fix_and_reassess(client, "notifications-service", fix_id)
-    assert seen == ["catalog_entry", "api_spec", "test_command_documented"]
-    assert data["latest_run"]["status"] == "completed"
+def test_notifications_starts_unassessed_and_shows_all_issues_at_once(client):
+    before = detail(client, "notifications-service")
+    assert before["history"] == [] and before["score"] is None
+    data = client.post("/api/services/notifications-service/assess").json()
+    assert data["latest_run"] is None
+    open_checks = {f["check_id"] for f in data["findings"]}
+    assert {"catalog_entry", "test_command_documented", "structured_logging"} <= open_checks
+
+
+def test_shared_gaps_go_to_the_platform_team(client):
+    data = client.post("/api/services/notifications-service/assess").json()
+    assert finding(data, "ci_config")["owner_team"] == store.SHARED_TEAM
+    assert finding(data, "catalog_entry")["owner_team"] == "team-messaging"
 
 
 def test_submitting_without_a_change_reopens(client):
@@ -91,7 +96,7 @@ def test_registered_repo_is_scanned_but_never_executed(client, tmp_path, monkeyp
     assert response.status_code == 201
     assert response.json()["latest_run"] is None
     assert not marker.exists()
-    assert client.get("/api/overview").json()["unmeasured_services"] == 1
+    assert client.get("/api/overview").json()["unmeasured_services"] == 2
 
 
 def test_register_rejects_path_outside_home(client):

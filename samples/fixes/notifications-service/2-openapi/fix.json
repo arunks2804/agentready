@@ -1,1 +1,0 @@
-{"title": "Publish the API contract", "check_id": "api_spec", "note": "Recommended fix. Describes how other systems talk to this service.", "order": 2, "recommended": true}
