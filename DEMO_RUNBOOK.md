@@ -27,6 +27,8 @@ Open http://127.0.0.1:8010, and click **Reset demo**. Check that **Simulation mo
 
 ## 3. Click by click
 
+**Opening:** "This is AgentReady. It checks whether a service is ready for AI coding agents before work is assigned to them. This is a local prototype using one sample service, Notifications Service. In this demo, the agent steps are simulated with prepared data, because the coding agent isn't reliable yet. The script checks and file fixes are real, and simulated steps are labelled on screen."
+
 | # | Click | What appears | Say |
 |---|---|---|---|
 | 1 | **Assess Readiness** | 6 of 17, and 13 open findings | Scripts check the facts. The simulated Gap Analysis Agent adds what scripts can't judge |
@@ -35,7 +37,11 @@ Open http://127.0.0.1:8010, and click **Reset demo**. Check that **Simulation mo
 | 4 | **Readiness**, then **Reassess** | 9 of 17, and 8 open | The simulated recheck closes the agent's two findings. Remaining gaps stay visible |
 | 5 | **Coding task**, then **Validate with Coding Agent** | Passed, labelled Simulated | This is a simulated run |
 
-Then say that the same process applies when work gets stuck later, and that this part isn't built yet.
+Finish with the two closing parts, which match the video:
+
+**After the first assessment:** "After this first assessment, the same process applies whenever work gets stuck. A story, bug or requirement is raised in Jira. If the coding agent can't complete it, it raises an issue to the platform. The platform analyses the issue, the gap goes to the owning team, it's fixed, and the service is reassessed. This part isn't built yet. This demo shows the first assessment only."
+
+**Conclusion:** "AgentReady shows whether a service is ready for AI coding agents before work is assigned, and finds what's missing whenever agents get stuck. Every gap has an owner and evidence, and a gap closes only when reassessment confirms the fix. The process repeats as work continues, so agents can work smoothly. Don't just ask whether the AI agent is ready for work. Make sure it always has what it needs to do the work. This is an early prototype, and the next step is making the real coding agent reliable."
 
 The Coding Agent is refused until the agent's findings are closed, which keeps the agreed order.
 
