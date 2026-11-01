@@ -1,7 +1,7 @@
 """Record the narrated AgentReady product demo (Playwright + Chromium, 1920x1080, British Piper voiceover).
 
-One opening slide, then narration over real clicks in the running app, in Simulation mode. Agent and Jira
-steps use prepared data and are labelled on screen. Script checks and file fixes are real, and the story stops
+One opening slide, then narration over real clicks in the running app, in Simulation mode. Agent steps use
+prepared data and are labelled on screen. Script checks and file fixes are real, and the story stops
 if the page does not show what the narration says. The app runs on its own port with a temporary data folder,
 so it never touches a running copy.
 
@@ -109,7 +109,7 @@ class Narrator:
 
 BANNED_WORDS = ("different", "one cent", "assistant", "makes the fix", "probe", "billing")
 # Captions keep the exact text. These respellings are only for the voice.
-SPOKEN = {"6 of 17": "six of seventeen", "9 of 17": "nine of seventeen", "4701": "forty seven oh one"}
+SPOKEN = {"6 of 17": "six of seventeen", "9 of 17": "nine of seventeen"}
 
 
 def caption_chunks(text: str) -> list[str]:
@@ -269,9 +269,9 @@ def run(args) -> Path | None:
         # ================================================================== opening
         d.slide('<div class="kicker">Product demo</div><h1>AgentReady</h1>'
                 '<p class="lead">Check whether a service is ready for AI coding agents before work is assigned to them.</p>'
-                '<div class="note">Local prototype with one sample service. Agent and Jira steps are simulated with prepared data. Script checks and file fixes are real.</div>')
+                '<div class="note">Local prototype with one sample service. Agent steps are simulated with prepared data. Script checks and file fixes are real.</div>')
         with Scene(d, "This is AgentReady. It checks whether a service is ready for AI coding agents before work is assigned to them. "
-                      "This is a local prototype using one sample service, Notifications Service. In this demo, the agent and Jira steps are simulated with prepared data, "
+                      "This is a local prototype using one sample service, Notifications Service. In this demo, the agent steps are simulated with prepared data, "
                       "because the coding agent isn't reliable yet. The script checks and file fixes are real, and simulated steps are labelled on screen.", pad=0.5):
             pass
         d.slide(None)
@@ -299,7 +299,8 @@ def run(args) -> Path | None:
             pass
 
         # ================================================================== fix
-        with Scene(d, "The team fixes the gaps. Here, a prepared fix really changes the sample files."):
+        with Scene(d, "In a real product, the team would be informed and would make the fix. In this demo, the team isn't informed, "
+                      "and the fix is simulated with a prepared change to the sample files."):
             for title in ("API contract does not match the code", "Template guide leaves out required steps",
                           "Service is registered in the catalog", "Test command is documented"):
                 d.fix(title)
@@ -326,36 +327,18 @@ def run(args) -> Path | None:
             page.wait_for_selector(".stat:text-is('Passed')", timeout=30_000)
             d.show(page.locator(".card", has_text="Outcome").first)
 
-        # ================================================================== bug
-        d.click("#bug", settle=300)
-        page.wait_for_selector("text=Not fixed", timeout=30_000)
-        page.evaluate("() => scrollTo({top: 0, behavior: 'instant'})")
-        with Scene(d, "Later, a bug arrives. Customers in India aren't receiving login codes. The simulated coding agent can't fix it, because nothing explains error 4701, so it raises a simulated Jira request."):
-            page.wait_for_timeout(6500)
-            d.show(page.locator(".card", has_text="Jira request").first)
-
-        # ================================================================== expose the gap
-        d.click("#diagnose-ticket", settle=300)
-        page.wait_for_selector("text=exposed a gap", timeout=30_000)
-        d.show(page.locator(".card", has_text="Jira request").first)
-        with Scene(d, "AgentReady reads that request and exposes the gap: the SMS sender rules aren't documented. It's assigned to team messaging."):
-            page.wait_for_timeout(3500)
-            d.go("#/findings", "Findings")
-            d.show(d.finding("SMS sender rules are not documented"))
-
-        # ================================================================== fix and rerun
-        with Scene(d, "The team adds the guide, a real file."):
-            d.fix("SMS sender rules are not documented")
-        d.go("#/", "notifications-service")
-        d.click("#reassess", settle=300)
-        page.wait_for_selector(".running", state="detached", timeout=30_000)
-        d.go("#/coding", "Coding task validation")
-        with Scene(d, "Reassessment closes the finding, and the simulated rerun fixes the bug."):
-            d.click("#bug", settle=300)
-            page.wait_for_selector(".stat:text-is('Fixed')", timeout=30_000)
-            page.evaluate("() => scrollTo({top: 0, behavior: 'instant'})")
-        data = page.evaluate("() => fetch('/api/services/notifications-service').then(r => r.json())")
-        expect(all(f["status"] == "verified" for f in data["findings"] if f["source"] != "script"), "the SMS finding should be closed")
+        # ================================================================== what happens later
+        d.slide('<div class="kicker">After the first assessment</div><h2>The same process applies whenever work gets stuck</h2>'
+                '<ul><li>A <b>story, bug or requirement</b> is raised in Jira</li>'
+                '<li>If the coding agent can\'t complete it, it <b>raises an issue to the platform</b></li>'
+                '<li>The platform <b>analyses the issue</b>, and the gap goes to the owning team</li>'
+                '<li>The team <b>fixes it</b>, and the service is <b>reassessed</b></li></ul>'
+                '<div class="note">Not built yet. This demo shows the first assessment only.</div>')
+        with Scene(d, "After this first assessment, the same process applies whenever work gets stuck. A story, bug or requirement is raised in Jira. "
+                      "If the coding agent can't complete it, it raises an issue to the platform. The platform analyses the issue, the gap goes to the owning team, "
+                      "it's fixed, and the service is reassessed. This part isn't built yet. This demo shows the first assessment only.", pad=0.5):
+            pass
+        d.slide(None)
 
         # ================================================================== close
         d.go("#/", "notifications-service")

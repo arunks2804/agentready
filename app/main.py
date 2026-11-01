@@ -87,7 +87,7 @@ class SettingsIn(BaseModel):
 
 
 class AgentRunIn(BaseModel):
-    kind: Literal["gap", "recheck", "coding", "bug", "diagnose"]
+    kind: Literal["gap", "recheck", "coding", "diagnose"]
     source_run_id: int | None = None
 
 
@@ -165,7 +165,7 @@ def put_settings(body: SettingsIn):
 @app.post("/api/services/{service_id}/agent-runs", status_code=202)
 def start_agent_run(service_id: str, body: AgentRunIn):
     service = _require_service(service_id)
-    if service["kind"] != "sample" and body.kind in ("coding", "bug"):
+    if service["kind"] != "sample" and body.kind == "coding":
         raise HTTPException(422, "AgentReady only runs code in bundled sample repositories.")
     try:
         return {"id": jobs.start(service, body.kind, body.source_run_id)}

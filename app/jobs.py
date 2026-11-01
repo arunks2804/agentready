@@ -84,12 +84,9 @@ def start_simulated(service, kind, source_run_id):
         reason = simulation.blocked_reason(service, kind)
         if reason:
             raise JobError(reason)
-        source = store.get_agent_run(source_run_id) if source_run_id else None
-        if kind == "diagnose" and (source is None or "ticket" not in source["result"]):
-            raise JobError("Choose a failed run with a Jira request.")
         title = TITLES[kind](service)
-        run_id = store.create_agent_run(service["id"], kind, title, simulation.MODEL, source_run_id)
-        _thread = threading.Thread(target=_run, args=(service, kind, run_id, {}, source, simulation.RUNNERS), daemon=True)
+        run_id = store.create_agent_run(service["id"], kind, title, simulation.MODEL)
+        _thread = threading.Thread(target=_run, args=(service, kind, run_id, {}, None, simulation.RUNNERS), daemon=True)
         _thread.start()
         return run_id
 
@@ -99,8 +96,6 @@ def start_real(service, kind, source_run_id):
     with _lock:
         if busy():
             raise JobError("An agent is already running.")
-        if kind == "bug":
-            raise JobError("The bug scenario exists only in Simulation mode.")
         settings = live_settings()
         if kind == "coding" and not sandbox.available():
             raise JobError("The sandbox is unavailable, so model-written code cannot run.")
@@ -215,6 +210,5 @@ TITLES = {
     "gap": lambda s: f"Contextual review of {s['name']}",
     "recheck": lambda s: f"Recheck contextual findings on {s['name']}",
     "coding": lambda s: store.coding_task(s["id"])["title"] if store.coding_task(s["id"]) else "Coding task",
-    "bug": lambda s: "Bug NOTIF-931: login codes rejected",
     "diagnose": lambda s: f"Diagnose a coding failure on {s['name']}",
 }

@@ -89,7 +89,7 @@ function findingCard(f, fixes = []) {
   const actions = f.status === "verified" ? "" : `<div class="actions">
     ${f.status === "awaiting_verification"
       ? `<span class="muted">Fix submitted. Only a reassessment can close this.</span>`
-      : fix ? `<button class="ghost" data-fix="${esc(fix.id)}">Apply prepared fix</button>` : ""}
+      : fix ? `<button class="ghost" data-fix="${esc(fix.id)}">Simulate team fix</button>` : ""}
   </div>`;
   return `<article class="finding">
     <div class="finding-head"><span class="finding-title">${esc(f.title)}</span>
@@ -245,46 +245,24 @@ function resultCards(run) {
   </section>`;
 }
 
-function ticketCard(ticket, diagnosis) {
-  return `<section class="card" style="margin-bottom:16px"><h2>Jira request ${provenance("simulated")}</h2>
-    <div class="ticket"><strong>${esc(ticket.key)}: ${esc(ticket.summary)}</strong>
-      <div class="muted">${esc(ticket.detail)} Assigned to ${esc(ticket.assignee)}.</div></div>
-    ${diagnosis && diagnosis.status !== "running" ? `<p style="margin-top:10px">AgentReady read ${esc(ticket.key)} and exposed a gap: ${(diagnosis.result.outcomes ?? []).map((o) => `<a href="#/findings">${esc(o.title)}</a>`).join(", ")}.</p>` : ""}
-  </section>`;
-}
-
 async function renderCoding() {
   const [s, status] = await Promise.all([api(`/services/${encodeURIComponent(current)}`), api("/ollama")]);
   const simulated = status.settings.mode === "simulated";
   const task = s.coding_task;
   const run = latestRun(s, "coding");
-  const bug = latestRun(s, "bug");
   const active = s.agent_runs.find((r) => r.status === "running");
-  const diagnosis = s.agent_runs.find((r) => r.kind === "diagnose" && [run?.id, bug?.id].includes(r.source_run_id));
+  const diagnosis = s.agent_runs.find((r) => r.kind === "diagnose" && r.source_run_id === run?.id);
   const blocked = active || (!simulated && (!status.connected || !status.sandbox));
-  const bugOpen = bug?.status === "failed";
-  const anyDiagnosis = s.agent_runs.find((r) => r.kind === "diagnose" && r.source_run_id === bug?.id);
   view.innerHTML = `<div class="page-head"><div><div class="eyebrow">${esc(s.name)}</div><h1>Coding task validation</h1>
       <p class="sub">${simulated ? "Simulated results, until the real Coding Agent is reliable." : "A real local model attempts one small task in an isolated copy. The result applies to this task, model and setup only."}</p></div>
       <div class="page-actions">
         ${task && run?.status !== "passed" ? `<button id="validate" ${blocked ? "disabled" : ""}>${run ? "Retry" : "Validate with Coding Agent"}</button>` : ""}
         ${!simulated && run?.status === "failed" && !diagnosis ? `<button class="ghost" id="diagnose" ${active ? "disabled" : ""}>Diagnose failure</button>` : ""}
-        ${simulated && run?.status === "passed" && !bug ? `<button id="bug" ${blocked ? "disabled" : ""}>Raise bug NOTIF-931</button>` : ""}
-        ${bugOpen && !anyDiagnosis ? `<button id="diagnose-ticket" ${blocked ? "disabled" : ""}>Diagnose from Jira request</button>` : ""}
-        ${bugOpen && anyDiagnosis && anyDiagnosis.status !== "running" ? `<button id="bug" ${blocked ? "disabled" : ""}>Rerun bug fix</button>` : ""}
       </div></div>
     <div class="error" id="action-error" role="alert"></div>
     ${!simulated && !status.connected ? `<div class="callout">Ollama is not reachable. ${esc(status.error)}</div>` : ""}
     ${task ? "" : `<div class="callout">This service has no coding task.</div>`}
     ${runningBanner(active)}
-    ${bug ? `<h2 class="section-title">Bug ${esc(bug.result.task?.id ?? "NOTIF-931")}</h2>
-      ${bug.status === "running" ? "" : `<section class="split">
-        <div class="card"><div class="muted">Bug</div><h2>${esc(bug.result.task.title)}</h2><p style="margin-top:6px">${esc(bug.result.task.description)}</p></div>
-        <div class="card"><div class="muted">Outcome</div><div class="stat">${bug.status === "passed" ? "Fixed" : "Not fixed"}</div>
-          <p class="muted">${provenance("simulated")} Prepared result.</p></div></section>
-      ${bug.result.ticket ? ticketCard(bug.result.ticket, anyDiagnosis) : ""}
-      ${resultCards(bug)}`}` : ""}
-    ${bug ? `<h2 class="section-title">Earlier task</h2>` : ""}
     ${task ? `<section class="split">
       <div class="card"><div class="muted">Task</div><h2>${esc(task.id)}: ${esc(task.title)}</h2><p style="margin-top:6px">${esc(task.description)}</p></div>
       <div class="card"><div class="muted">Outcome</div>${codingSummary(run)}</div>
@@ -300,8 +278,6 @@ async function renderCoding() {
   });
   launch("validate", "coding");
   launch("diagnose", "diagnose", run?.id);
-  launch("diagnose-ticket", "diagnose", bug?.id);
-  launch("bug", "bug");
   watch(active, renderCoding);
 }
 

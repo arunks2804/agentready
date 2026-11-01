@@ -1,4 +1,4 @@
-"""Prepared agent and Jira results for the demo. Nothing here calls a model or Jira.
+"""Prepared agent results for the demo. Nothing here calls a model.
 
 Every run from this module is stored with the model name "Simulated", and the screens
 label it. Script checks, prepared fixes and reassessment stay real.
@@ -33,6 +33,8 @@ def _applied(service):
 def blocked_reason(service, kind):
     """The agreed order: fix and reassess first, then the Coding Agent."""
     pending = [f for f in service["findings"] if f["source"] != "script" and f["status"] != "verified"]
+    if kind == "diagnose":
+        return "Diagnosis is available only with real agents."
     if kind == "coding" and pending:
         return "Fix the findings and reassess before the Coding Agent runs."
     return None
@@ -64,23 +66,4 @@ def run_coding(service, _run_id, _settings, _source, record):
     return "passed", {"simulated": True, **data["result"]}
 
 
-def run_bug(service, _run_id, _settings, _source, record):
-    data = _data(service)["bug"]
-    fixed = "SMS sender setup" in _applied(service)
-    _play(data["passed_trace" if fixed else "failed_trace"], record)
-    return ("passed" if fixed else "failed"), {
-        "simulated": True, "task": data["task"], **data["passed_result" if fixed else "failed_result"]}
-
-
-def run_diagnose(service, run_id, _settings, source, record):
-    data = _data(service)["bug"]
-    ticket = source["result"]["ticket"]
-    _play([
-        {"tool": "read_ticket", "args": {"path": ticket["key"]}, "result": f"Simulated: read {ticket['key']}."},
-        {"tool": "search", "args": {"text": "sender"}, "result": "Simulated: no SMS sender documentation found."},
-    ], record)
-    outcome = store.record_agent_finding(service, {**data["finding"], "provenance": "simulated"}, run_id)
-    return "completed", {"simulated": True, "route": "ticket", "ticket": ticket["key"], "outcomes": [outcome]}
-
-
-RUNNERS = {"gap": run_gap, "recheck": run_recheck, "coding": run_coding, "bug": run_bug, "diagnose": run_diagnose}
+RUNNERS = {"gap": run_gap, "recheck": run_recheck, "coding": run_coding}

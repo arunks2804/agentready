@@ -1,69 +1,132 @@
 {
   "gap": {
     "trace": [
-      {"tool": "read_file", "args": {"path": "README.md"}, "result": "Simulated: read the README."},
-      {"tool": "read_file", "args": {"path": "openapi.yaml"}, "result": "Simulated: read the API contract."},
-      {"tool": "read_file", "args": {"path": "src/notifications/dispatcher.py"}, "result": "Simulated: read the dispatcher."},
-      {"tool": "submit_report", "result": "Simulated: two findings."}
+      {
+        "tool": "read_file",
+        "args": {
+          "path": "README.md"
+        },
+        "result": "Simulated: read the README."
+      },
+      {
+        "tool": "read_file",
+        "args": {
+          "path": "openapi.yaml"
+        },
+        "result": "Simulated: read the API contract."
+      },
+      {
+        "tool": "read_file",
+        "args": {
+          "path": "src/notifications/dispatcher.py"
+        },
+        "result": "Simulated: read the dispatcher."
+      },
+      {
+        "tool": "submit_report",
+        "result": "Simulated: two findings."
+      }
     ],
     "findings": [
-      {"title": "API contract does not match the code", "dimension": "api_context", "severity": "high", "certainty": "confirmed",
-       "explanation": "The contract says every notification goes by email and returns message_id. The code also sends SMS and returns delivery_id.",
-       "recommendation": "Correct the template list, channels and response in openapi.yaml.",
-       "evidence": [{"file": "openapi.yaml", "quote": "example: {message_id: m_1, channel: email}"}]},
-      {"title": "Template guide leaves out required steps", "dimension": "code_understanding", "severity": "high", "certainty": "confirmed",
-       "explanation": "The README says one change is enough. The code also needs the required fields and the delivery channel.",
-       "recommendation": "List every place a new template must be registered.",
-       "evidence": [{"file": "README.md", "quote": "That is the only change needed."}]}
+      {
+        "title": "API contract does not match the code",
+        "dimension": "api_context",
+        "severity": "high",
+        "certainty": "confirmed",
+        "explanation": "The contract says every notification goes by email and returns message_id. The code also sends SMS and returns delivery_id.",
+        "recommendation": "Correct the template list, channels and response in openapi.yaml.",
+        "evidence": [
+          {
+            "file": "openapi.yaml",
+            "quote": "example: {message_id: m_1, channel: email}"
+          }
+        ]
+      },
+      {
+        "title": "Template guide leaves out required steps",
+        "dimension": "code_understanding",
+        "severity": "high",
+        "certainty": "confirmed",
+        "explanation": "The README says one change is enough. The code also needs the required fields and the delivery channel.",
+        "recommendation": "List every place a new template must be registered.",
+        "evidence": [
+          {
+            "file": "README.md",
+            "quote": "That is the only change needed."
+          }
+        ]
+      }
     ]
   },
   "coding": {
     "trace": [
-      {"tool": "read_file", "args": {"path": "AGENTS.md"}, "result": "Simulated: read the agent guide."},
-      {"tool": "write_file", "args": {"path": "src/notifications/templates.py"}, "result": "Simulated: added the template."},
-      {"tool": "write_file", "args": {"path": "src/notifications/dispatcher.py"}, "result": "Simulated: added the channel."},
-      {"tool": "write_file", "args": {"path": "tests/test_templates.py"}, "result": "Simulated: added a test."},
-      {"tool": "run_command", "args": {"command": "python -m unittest discover -s tests"}, "result": "Simulated: all tests pass."}
+      {
+        "tool": "read_file",
+        "args": {
+          "path": "AGENTS.md"
+        },
+        "result": "Simulated: read the agent guide."
+      },
+      {
+        "tool": "write_file",
+        "args": {
+          "path": "src/notifications/templates.py"
+        },
+        "result": "Simulated: added the template."
+      },
+      {
+        "tool": "write_file",
+        "args": {
+          "path": "src/notifications/dispatcher.py"
+        },
+        "result": "Simulated: added the channel."
+      },
+      {
+        "tool": "write_file",
+        "args": {
+          "path": "tests/test_templates.py"
+        },
+        "result": "Simulated: added a test."
+      },
+      {
+        "tool": "run_command",
+        "args": {
+          "command": "python -m unittest discover -s tests"
+        },
+        "result": "Simulated: all tests pass."
+      }
     ],
     "result": {
-      "task": {"id": "NOTIF-912", "title": "Add a payment_failed notification template"},
-      "checks": [{"name": "Source code changed", "passed": true}, {"name": "A test was added", "passed": true}, {"name": "All tests pass", "passed": true}],
-      "changed_files": ["src/notifications/templates.py", "src/notifications/dispatcher.py", "tests/test_templates.py"],
+      "task": {
+        "id": "NOTIF-912",
+        "title": "Add a payment_failed notification template"
+      },
+      "checks": [
+        {
+          "name": "Source code changed",
+          "passed": true
+        },
+        {
+          "name": "A test was added",
+          "passed": true
+        },
+        {
+          "name": "All tests pass",
+          "passed": true
+        }
+      ],
+      "changed_files": [
+        "src/notifications/templates.py",
+        "src/notifications/dispatcher.py",
+        "tests/test_templates.py"
+      ],
       "diff": "--- a/src/notifications/dispatcher.py\n+++ b/src/notifications/dispatcher.py\n+    \"payment_failed\": \"email\",",
-      "tests_ran": 9, "test_output": "Simulated output. Ran 9 tests. OK",
-      "self_report": {"summary": "Added the payment_failed template and a test.", "believes_complete": true}
-    }
-  },
-  "bug": {
-    "task": {"id": "NOTIF-931", "title": "Login codes are rejected for customers in India",
-             "description": "Customers in India do not receive SMS login codes. The provider returns error 4701."},
-    "failed_trace": [
-      {"tool": "search", "args": {"text": "4701"}, "result": "Simulated: no matches in the repository."},
-      {"tool": "read_file", "args": {"path": "src/notifications/dispatcher.py"}, "result": "Simulated: no sender rule in the code."},
-      {"tool": "raise_ticket", "result": "Simulated: Jira request NOTIF-932 raised."}
-    ],
-    "failed_result": {
-      "checks": [{"name": "Bug fixed", "passed": false}], "changed_files": [], "diff": "", "tests_ran": 0,
-      "test_output": "Simulated: no change was made.",
-      "self_report": {"summary": "I cannot fix this. Nothing explains error 4701 or the SMS sender rules.", "believes_complete": false},
-      "ticket": {"key": "NOTIF-932", "summary": "Coding agent needs SMS sender details to fix NOTIF-931",
-                 "detail": "Error 4701 is not explained anywhere in the repository.", "assignee": "team-messaging"}
-    },
-    "finding": {"title": "SMS sender rules are not documented", "dimension": "code_understanding", "severity": "blocker", "certainty": "confirmed",
-      "explanation": "Jira request NOTIF-932 shows the Coding Agent could not explain error 4701. The service documents nothing about SMS sender IDs.",
-      "recommendation": "Document the SMS sender ID rule and what error 4701 means.",
-      "evidence": [{"file": "SMS sender setup", "quote": "Missing from the service documentation. Raised by Jira request NOTIF-932."}]},
-    "passed_trace": [
-      {"tool": "read_file", "args": {"path": "docs/sms.md"}, "result": "Simulated: read the new SMS guide."},
-      {"tool": "write_file", "args": {"path": "src/notifications/dispatcher.py"}, "result": "Simulated: added the sender ID."},
-      {"tool": "run_command", "args": {"command": "python -m unittest discover -s tests"}, "result": "Simulated: all tests pass."}
-    ],
-    "passed_result": {
-      "checks": [{"name": "Bug fixed", "passed": true}, {"name": "All tests pass", "passed": true}],
-      "changed_files": ["src/notifications/dispatcher.py"],
-      "diff": "--- a/src/notifications/dispatcher.py\n+++ b/src/notifications/dispatcher.py\n+    sender_id = os.environ[\"SMS_SENDER_ID\"]",
-      "tests_ran": 10, "test_output": "Simulated output. Ran 10 tests. OK",
-      "self_report": {"summary": "Added the sender ID using the new SMS guide.", "believes_complete": true}
+      "tests_ran": 9,
+      "test_output": "Simulated output. Ran 9 tests. OK",
+      "self_report": {
+        "summary": "Added the payment_failed template and a test.",
+        "believes_complete": true
+      }
     }
   }
 }
